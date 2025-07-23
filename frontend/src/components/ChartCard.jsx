@@ -15,7 +15,7 @@ function ChartCard() {
 
       {/* User Info */}
       <div className="flex flex-col justify-center">
-        <h2 className="text-lg font-semibold text-white">Sharif Iddrisu</h2>
+        <h2 className="text-lg font-semibold text-white">hamdan</h2>
         <p className="text-sm text-green-400 flex items-center">
           <span className="mr-1">●</span> Online
         </p>
