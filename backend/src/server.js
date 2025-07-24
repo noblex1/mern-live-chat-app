@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import messageRouter from './routes/message.route.js';
 import connectDB from './lib/db.js';
-// Import routes
 import authRoutes from './routes/auth.route.js';
 
 // Load environment variables
@@ -18,31 +17,44 @@ const app = express();
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
+
+// ✅ Updated CORS configuration
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://192.168.1.89:3000'
+];
+
 app.use(cors({
-    origin: 'http://localhost:5173', 
-    credentials: true
-})); // Allows frontend to communicate with back
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
+
 // Get port from environment or use 5000
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB database
 mongoose.connect(process.env.MONGODB_URI)
-
-.then(() => {
-  console.log('✅ Connected to MongoDB database');
-})
-.catch((error) => {
-  console.error('❌ Database connection error:', error);
-});
+  .then(() => {
+    console.log('✅ Connected to MongoDB database');
+  })
+  .catch((error) => {
+    console.error('❌ Database connection error:', error);
+  });
 
 // Routes
 app.use('/api/auth/messages', messageRouter);
+app.use('/api/auth', authRoutes);
+
 app.get('/', (req, res) => {
   res.send('Chat Server is Running and Connected to Database!');
 });
-
-// Use auth routes - all auth routes will start with /api/auth
-app.use('/api/auth', authRoutes);
 
 // Start the server
 app.listen(PORT, () => {
