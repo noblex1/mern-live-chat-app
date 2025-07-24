@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom'; // ⬅️ Added useNavigate
 import AuthSkeleton from '../components/auth/AuthSkeleton';
 import toast from 'react-hot-toast';
 
 const SignUpPage = () => {
+  const navigate = useNavigate(); // ⬅️ Initialize navigation
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
@@ -27,8 +28,13 @@ const SignUpPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = validateForm();
-    if (success === true) await signup(formData);
+    const isValid = validateForm();
+    if (!isValid) return;
+
+    const success = await signup(formData);
+    if (success) {
+      navigate('/login'); // ✅ Redirect to sign-in page
+    }
   };
 
   return (
@@ -36,7 +42,6 @@ const SignUpPage = () => {
       {/* Left Side - Form */}
       <div className="flex flex-col justify-center items-center p-6 sm:p-12">
         <div className="w-full max-w-md space-y-8">
-          {/* Logo */}
           <div className="text-center mb-8">
             <div className="flex flex-col items-center gap-2 group">
               <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center group-hover:bg-blue-200 transition-colors">
@@ -47,7 +52,6 @@ const SignUpPage = () => {
             </div>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <label htmlFor="username" className="text-sm font-medium text-gray-700">
@@ -139,11 +143,7 @@ const SignUpPage = () => {
               </div>
             </div>
 
-            <button
-              type="submit"
-              className="btn btn-primary w-full"
-              disabled={isSigningUp}
-            >
+            <button type="submit" className="btn btn-primary w-full" disabled={isSigningUp}>
               {isSigningUp ? (
                 <>
                   <Loader2 className="h-5 w-5 animate-spin mr-2" />
