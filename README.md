@@ -233,6 +233,6 @@ If you have any questions or need help with the application, please:
 
 ---
 
-**Made with ❤️ by [Your Name]**
+**Made by Sharif Iddrisu**
 
 ⭐ **Star this repository if you found it helpful!** 
