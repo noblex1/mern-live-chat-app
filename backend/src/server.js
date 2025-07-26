@@ -19,21 +19,11 @@ app.use(express.json());
 app.use(cookieParser());
 
 // ✅ Updated CORS configuration
-const allowedOrigins = [
-  'http://localhost:3000',
-  'http://localhost:5173',
-  'http://192.168.1.89:3000'
-];
-
 app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173'],
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 }));
 
 // Get port from environment or use 5000
@@ -49,7 +39,7 @@ mongoose.connect(process.env.MONGODB_URI)
   });
 
 // Routes
-app.use('/api/auth/messages', messageRouter);
+app.use('/api/messages', messageRouter);
 app.use('/api/auth', authRoutes);
 
 app.get('/', (req, res) => {

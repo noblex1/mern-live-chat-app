@@ -22,19 +22,19 @@ const Sidebar = () => {
   if (isUsersLoading) return <SidebarSkeleton />;
 
   return (
-    <aside className="mt-20 h-full w-20 lg:w-80 border-r border-gray-200 flex flex-col transition-all duration-200">
+    <aside className="mt-20 h-full w-20 lg:w-80 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-200">
       {/* Header */}
-      <div className="border-b border-gray-200 p-5">
+      <div className="border-b border-gray-200 dark:border-gray-700 p-5">
         <div className="flex items-center gap-2">
-          <Users className="w-6 h-6 text-gray-600" />
-          <span className="font-semibold text-gray-900 hidden lg:block">Conversations</span>
+          <Users className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+          <span className="font-semibold text-gray-900 dark:text-white hidden lg:block">Conversations</span>
         </div>
 
         {/* Search */}
         <div className="mt-4 hidden lg:block">
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-4 w-4 text-gray-400" />
+              <Search className="h-4 w-4 text-gray-400 dark:text-gray-500" />
             </div>
             <input
               type="text"
@@ -53,11 +53,11 @@ const Sidebar = () => {
               type="checkbox"
               checked={showOnlineOnly}
               onChange={(e) => setShowOnlineOnly(e.target.checked)}
-              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+              className="w-4 h-4 text-blue-600 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500"
             />
-            <span className="text-sm text-gray-600">Show online only</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400">Show online only</span>
           </label>
-          <span className="text-xs text-gray-500">({onlineUsers.length - 1} online)</span>
+          <span className="text-xs text-gray-500 dark:text-gray-500">({onlineUsers.length - 1} online)</span>
         </div>
       </div>
 
@@ -67,25 +67,25 @@ const Sidebar = () => {
           <button
             key={user._id}
             onClick={() => setSelectedUser(user)}
-            className={`w-full p-3 flex items-center gap-3 hover:bg-gray-50 transition-colors ${
-              selectedUser?._id === user._id ? 'bg-blue-50 border-r-2 border-blue-500' : ''
+            className={`w-full p-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+              selectedUser?._id === user._id ? 'bg-blue-50 dark:bg-blue-900/20 border-r-2 border-blue-500' : ''
             }`}
           >
             <div className="relative mx-auto lg:mx-0">
               <img
-                src={user.profilePic || '/avatar.png'}
+                src={user.avatar || '/avatar.png'}
                 alt={user.username}
                 className="w-12 h-12 object-cover rounded-full"
               />
               {onlineUsers.includes(user._id) && (
-                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white" />
+                <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white dark:ring-gray-800" />
               )}
             </div>
 
             {/* User info - only visible on larger screens */}
             <div className="hidden lg:block text-left min-w-0 flex-1">
-              <div className="font-medium truncate text-gray-900">{user.username}</div>
-              <div className="text-sm text-gray-500">
+              <div className="font-medium truncate text-gray-900 dark:text-white">{user.username}</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">
                 {onlineUsers.includes(user._id) ? 'Online' : 'Offline'}
               </div>
             </div>
@@ -93,8 +93,8 @@ const Sidebar = () => {
         ))}
 
         {filteredUsers.length === 0 && (
-          <div className="text-center text-gray-500 py-8">
-            <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+          <div className="text-center text-gray-500 dark:text-gray-400 py-8">
+            <Users className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
             <p>{searchTerm ? 'No users found' : 'No contacts yet'}</p>
           </div>
         )}
@@ -106,20 +106,20 @@ const Sidebar = () => {
 // Skeleton loader component
 const SidebarSkeleton = () => {
   return (
-    <aside className="h-full w-20 lg:w-80 border-r border-gray-200 flex flex-col">
-      <div className="border-b border-gray-200 p-5">
+    <aside className="h-full w-20 lg:w-80 border-r border-gray-200 dark:border-gray-700 flex flex-col">
+      <div className="border-b border-gray-200 dark:border-gray-700 p-5">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 bg-gray-200 rounded animate-pulse" />
-          <div className="w-20 h-4 bg-gray-200 rounded animate-pulse hidden lg:block" />
+          <div className="w-6 h-6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+          <div className="w-20 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse hidden lg:block" />
         </div>
       </div>
       <div className="overflow-y-auto flex-1 py-3">
         {[...Array(8)].map((_, i) => (
           <div key={i} className="w-full p-3 flex items-center gap-3">
-            <div className="w-12 h-12 bg-gray-200 rounded-full animate-pulse mx-auto lg:mx-0" />
+            <div className="w-12 h-12 bg-gray-200 dark:bg-gray-700 rounded-full animate-pulse mx-auto lg:mx-0" />
             <div className="hidden lg:block flex-1">
-              <div className="w-24 h-4 bg-gray-200 rounded animate-pulse mb-2" />
-              <div className="w-16 h-3 bg-gray-200 rounded animate-pulse" />
+              <div className="w-24 h-4 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mb-2" />
+              <div className="w-16 h-3 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
             </div>
           </div>
         ))}

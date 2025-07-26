@@ -51,6 +51,39 @@ const userSchema = new mongoose.Schema({
     type: Date,          // Date of birth can be a date
     default: null        // Default is null if not provided
   },
+  settings: {
+    theme: {
+      type: String,
+      enum: ['light', 'dark', 'system'],
+      default: 'light'
+    },
+    notifications: {
+      type: Boolean,
+      default: true
+    },
+    soundEnabled: {
+      type: Boolean,
+      default: true
+    },
+    language: {
+      type: String,
+      default: 'en'
+    },
+    privacy: {
+      type: String,
+      enum: ['everyone', 'friends', 'nobody'],
+      default: 'friends'
+    },
+    showOnlineStatus: {
+      type: Boolean,
+      default: true
+    },
+    autoDeleteMessages: {
+      type: String,
+      enum: ['never', '7days', '30days', '90days'],
+      default: 'never'
+    }
+  },
 }, {
   timestamps: true       // Automatically adds createdAt and updatedAt
 });

@@ -3,7 +3,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: 'http://localhost:5000/api',
   withCredentials: true,
 });
 
@@ -22,6 +22,7 @@ export const useChatStore = create((set, get) => ({
       const res = await api.get('/messages/conversations');
       set({ users: res.data.data });
     } catch (error) {
+      console.log('Error in getUsers:', error);
       toast.error(error.response?.data?.message || 'Failed to load users');
     } finally {
       set({ isUsersLoading: false });
@@ -34,6 +35,7 @@ export const useChatStore = create((set, get) => ({
       const res = await api.get(`/messages/${userId}`);
       set({ messages: res.data.data.messages });
     } catch (error) {
+      console.log('Error in getMessages:', error);
       toast.error(error.response?.data?.message || 'Failed to load messages');
     } finally {
       set({ isMessagesLoading: false });

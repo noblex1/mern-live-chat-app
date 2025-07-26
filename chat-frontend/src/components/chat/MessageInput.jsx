@@ -49,7 +49,7 @@ const MessageInput = () => {
   };
 
   return (
-    <div className="border-t border-gray-200 p-4 bg-white">
+    <div className="border-t border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
       {/* Image Preview */}
       {imagePreview && (
         <div className="mb-3 flex items-center gap-2">
@@ -57,11 +57,11 @@ const MessageInput = () => {
             <img
               src={imagePreview}
               alt="Preview"
-              className="w-20 h-20 object-cover rounded-lg border border-gray-300"
+              className="w-20 h-20 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
             />
             <button
               onClick={removeImage}
-              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gray-500 flex items-center justify-center"
+              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gray-500 dark:bg-gray-600 flex items-center justify-center"
             >
               <X className="w-3 h-3 text-white" />
             </button>
@@ -82,10 +82,10 @@ const MessageInput = () => {
         {/* Image Button */}
         <button
           type="button"
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
           onClick={() => fileInputRef.current?.click()}
         >
-          <Image className="w-5 h-5 text-gray-600" />
+          <Image className="w-5 h-5 text-gray-600 dark:text-gray-400" />
         </button>
 
         {/* Text Input */}
@@ -99,9 +99,9 @@ const MessageInput = () => {
           />
           <button
             type="button"
-            className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-100 rounded transition-colors"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
           >
-            <Smile className="w-4 h-4 text-gray-600" />
+            <Smile className="w-4 h-4 text-gray-600 dark:text-gray-400" />
           </button>
         </div>
 

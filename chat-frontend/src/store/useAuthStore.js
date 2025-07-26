@@ -3,7 +3,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL,
+  baseURL: 'http://localhost:5000/api',
   withCredentials: true,
 });
 
@@ -69,8 +69,15 @@ export const useAuthStore = create((set) => ({
   updateProfile: async (data) => {
     set({ isUpdatingProfile: true });
     try {
-      const res = await api.put('/auth/update-profile', data);
-      set({ authUser: res.data });
+      // Convert profilePic to avatar if it exists
+      const updateData = { ...data };
+      if (data.profilePic) {
+        updateData.avatar = data.profilePic;
+        delete updateData.profilePic;
+      }
+      
+      const res = await api.put('/auth/profile', updateData);
+      set({ authUser: res.data.user });
       toast.success('Profile updated successfully');
     } catch (error) {
       console.log('Error in updateProfile:', error);
@@ -82,5 +89,40 @@ export const useAuthStore = create((set) => ({
 
   setOnlineUsers: (users) => {
     set({ onlineUsers: users });
+  },
+
+  changePassword: async (currentPassword, newPassword) => {
+    try {
+      await api.put('/auth/change-password', { currentPassword, newPassword });
+      toast.success('Password changed successfully');
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to change password');
+      return false;
+    }
+  },
+
+  deleteAccount: async (password) => {
+    try {
+      await api.delete('/auth/delete-account', { data: { password } });
+      set({ authUser: null });
+      toast.success('Account deleted successfully');
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to delete account');
+      return false;
+    }
+  },
+
+  updateSettings: async (settings) => {
+    try {
+      const res = await api.put('/auth/settings', { settings });
+      set({ authUser: res.data.user });
+      toast.success('Settings updated successfully');
+      return true;
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update settings');
+      return false;
+    }
   },
 }));

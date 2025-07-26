@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import User from '../models/user.model.js';
 import generateJWT from '../utils/generateJWT.js';
 import auth from '../middleware/auth.middleware.js'
-import { checkAuth, signIn, SignOut, signUp } from '../controllers/auth.controllers.js';
+import { checkAuth, signIn, SignOut, signUp, changePassword, deleteAccount, updateSettings } from '../controllers/auth.controllers.js';
 
 
 
@@ -301,6 +301,15 @@ router.put('/profile', auth, async (req, res) => {
     });
   }
 });
+
+// Change password route - PUT /api/auth/change-password
+router.put('/change-password', auth, changePassword);
+
+// Delete account route - DELETE /api/auth/delete-account
+router.delete('/delete-account', auth, deleteAccount);
+
+// Update settings route - PUT /api/auth/settings
+router.put('/settings', auth, updateSettings);
 
 // Export the router
 export default router;
