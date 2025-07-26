@@ -208,6 +208,16 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
+// Add this after router.get('/me', ...)
+router.get('/users', auth, async (req, res) => {
+  try {
+    const users = await User.find({ _id: { $ne: req.user._id } }).select('id username avatar isOnline');
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch users', error: error.message });
+  }
+});
+
 // Update profile route - PUT /api/auth/profile
 router.put('/profile', auth, async (req, res) => {
   try {

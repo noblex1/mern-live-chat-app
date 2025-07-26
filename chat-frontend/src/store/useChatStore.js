@@ -19,8 +19,8 @@ export const useChatStore = create((set, get) => ({
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {
-      const res = await api.get('/messages/conversations');
-      set({ users: res.data.data });
+      const res = await api.get('/auth/users');
+      set({ users: res.data.users });
     } catch (error) {
       console.log('Error in getUsers:', error);
       toast.error(error.response?.data?.message || 'Failed to load users');

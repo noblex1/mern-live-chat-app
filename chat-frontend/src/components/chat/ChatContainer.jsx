@@ -46,61 +46,60 @@ const ChatContainer = () => {
       <ChatHeader />
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
-          <div
-            key={message._id}
-            className={`flex ${message.senderId === authUser?._id ? 'justify-end' : 'justify-start'}`}
-          >
+        {messages.map((message) => {
+          const isSent = message.senderId === authUser?._id;
+          return (
             <div
-              className={`flex gap-3 max-w-xs lg:max-w-md ${
-                message.senderId === authUser?._id ? 'flex-row-reverse' : 'flex-row'
-              }`}
+              key={message._id}
+              className={`flex w-full ${isSent ? 'justify-end' : 'justify-start'}`}
             >
-              {/* Avatar */}
-              <div className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-700 shadow-sm overflow-hidden flex-shrink-0">
-                <img
-                  src={
-                    message.senderId === authUser?._id
-                      ? authUser?.avatar || '/avatar.png'
-                      : selectedUser?.avatar || '/avatar.png'
-                  }
-                  alt="avatar"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-
-              {/* Message Content */}
               <div
-                className={`flex flex-col ${
-                  message.senderId === authUser?._id ? 'items-end' : 'items-start'
-                }`}
+                className={`flex gap-3 max-w-xs lg:max-w-md ${isSent ? 'flex-row-reverse' : 'flex-row'}`}
               >
-                {/* Time */}
-                <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
-                  {formatMessageTime(message.createdAt)}
+                {/* Avatar */}
+                <div className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-700 shadow-sm overflow-hidden flex-shrink-0">
+                  <img
+                    src={
+                      isSent
+                        ? authUser?.avatar || '/avatar.png'
+                        : selectedUser?.avatar || '/avatar.png'
+                    }
+                    alt="avatar"
+                    className="w-full h-full object-cover"
+                  />
                 </div>
 
-                {/* Message Bubble */}
+                {/* Message Content */}
                 <div
-                  className={`rounded-2xl px-4 py-2 max-w-xs lg:max-w-md ${
-                    message.senderId === authUser?._id
-                      ? 'bg-blue-600 text-white'
-                      : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white'
-                  }`}
+                  className={`flex flex-col ${isSent ? 'items-end' : 'items-start'}`}
                 >
-                  {message.image && (
-                    <img
-                      src={message.image}
-                      alt="Attachment"
-                      className="max-w-full rounded-lg mb-2"
-                    />
-                  )}
-                  {message.text && <p className="text-sm">{message.text}</p>}
+                  {/* Time */}
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    {formatMessageTime(message.createdAt)}
+                  </div>
+
+                  {/* Message Bubble */}
+                  <div
+                    className={`rounded-2xl px-4 py-2 max-w-xs lg:max-w-md shadow-md ${
+                      isSent
+                        ? 'bg-blue-600 text-white rounded-br-none'
+                        : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-bl-none'
+                    }`}
+                  >
+                    {message.image && (
+                      <img
+                        src={message.image}
+                        alt="Attachment"
+                        className="max-w-full rounded-lg mb-2"
+                      />
+                    )}
+                    {message.text && <p className="text-sm">{message.text}</p>}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
         <div ref={messageEndRef} />
       </div>
 
