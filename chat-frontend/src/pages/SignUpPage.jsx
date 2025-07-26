@@ -1,12 +1,20 @@
 import { useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
-import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare, User } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom'; // ⬅️ Added useNavigate
+import {
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  Mail,
+  MessageSquare,
+  User,
+} from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthSkeleton from '../components/auth/AuthSkeleton';
 import toast from 'react-hot-toast';
 
 const SignUpPage = () => {
-  const navigate = useNavigate(); // ⬅️ Initialize navigation
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
@@ -31,9 +39,16 @@ const SignUpPage = () => {
     const isValid = validateForm();
     if (!isValid) return;
 
-    const success = await signup(formData);
-    if (success) {
-      navigate('/login'); // ✅ Redirect to sign-in page
+    try {
+      const success = await signup(formData);
+      if (success) {
+        toast.success('Account created successfully!');
+        navigate('/login');
+      } else {
+        toast.error('Signup failed. Please try again.');
+      }
+    } catch (error) {
+      toast.error('Something went wrong. Please try again.');
     }
   };
 
@@ -47,8 +62,12 @@ const SignUpPage = () => {
               <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900 flex items-center justify-center group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
                 <MessageSquare className="w-6 h-6 text-blue-600 dark:text-blue-400" />
               </div>
-              <h1 className="text-2xl font-bold mt-2 text-gray-900 dark:text-white">Create Account</h1>
-              <p className="text-gray-600 dark:text-gray-400">Get started with your free account</p>
+              <h1 className="text-2xl font-bold mt-2 text-gray-900 dark:text-white">
+                Create Account
+              </h1>
+              <p className="text-gray-600 dark:text-gray-400">
+                Get started with your free account
+              </p>
             </div>
           </div>
 

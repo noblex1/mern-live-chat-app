@@ -9,6 +9,7 @@ import SettingsPage from './pages/SettingsPage';
 import HomePage from './pages/HomePage';
 import Navbar from './components/layout/Navbar';
 import LoadingSpinner from './components/LoadingSpinner';
+import { Toaster } from 'react-hot-toast'; // ✅ Import Toaster
 
 const App = () => {
   const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
@@ -24,6 +25,7 @@ const App = () => {
   return (
     <ThemeProvider>
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+        <Toaster position="top-right" toastOptions={{ duration: 4000 }} /> {/* ✅ Add this */}
         {authUser && <Navbar />}
         <Routes>
           <Route

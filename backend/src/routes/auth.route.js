@@ -11,15 +11,6 @@ import { checkAuth, signIn, SignOut, signUp, changePassword, deleteAccount, upda
 // Create router
 const router = express.Router();
 
-router.post('/sign-up', signUp);
-
-router.post('/sign-in', signIn);
-
-router.get('/sign-out', auth, SignOut);
-
-router.get('/check', auth, checkAuth);
-
-// Sign-up route - POST /api/auth/signup
 router.post('/signup', async (req, res) => {
   try {
     // Get user data from request body
@@ -86,6 +77,13 @@ router.post('/signup', async (req, res) => {
     });
   }
 });
+
+// Login route - POST /api/auth/login
+router.post('/sign-in', signIn);
+
+router.get('/sign-out', auth, SignOut);
+
+router.get('/check', auth, checkAuth);
 
 // Login route - POST /api/auth/login
 router.post('/login', async (req, res) => {
