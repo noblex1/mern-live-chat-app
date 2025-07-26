@@ -5,6 +5,7 @@ import User from '../models/user.model.js';
 import generateJWT from '../utils/generateJWT.js';
 import auth from '../middleware/auth.middleware.js'
 import { checkAuth, signIn, SignOut, signUp, changePassword, deleteAccount, updateSettings } from '../controllers/auth.controllers.js';
+import cloudinary from '../lib/cloudinary.js';
 
 
 
@@ -224,16 +225,28 @@ router.put('/profile', auth, async (req, res) => {
     // Get update data from request
     const { username, email, avatar, city, relationshipStatus, bio, location, dateOfBirth } = req.body;
 
+
     // Prepare update object (only include provided fields)
     const updateData = {};
     if (username) updateData.username = username;
     if (email) updateData.email = email;
-    if (avatar) updateData.avatar = avatar;
     if (city) updateData.city = city;
     if (relationshipStatus) updateData.relationshipStatus = relationshipStatus;
     if (bio) updateData.bio = bio;
     if (location) updateData.location = location;
     if (dateOfBirth) updateData.dateOfBirth = dateOfBirth;
+
+    if (avatar) {
+
+     const imageUploadRes = await cloudinary.uploader.upload(avatar)
+
+     const avatarUrl = imageUploadRes.secure_url
+      updateData.avatar = avatarUrl;
+    }
+
+
+
+   
 
     // Check if username or email is being changed to one that already exists
     if (username || email) {
