@@ -11,9 +11,11 @@ export const useChatStore = create((set, get) => ({
   // State
   messages: [],
   users: [],
+  searchResults: [],
   selectedUser: null,
   isUsersLoading: false,
   isMessagesLoading: false,
+  isSearching: false,
 
   // Actions
   getUsers: async () => {
@@ -26,6 +28,24 @@ export const useChatStore = create((set, get) => ({
       toast.error(error.response?.data?.message || 'Failed to load users');
     } finally {
       set({ isUsersLoading: false });
+    }
+  },
+
+  searchUsers: async (query) => {
+    if (!query.trim()) {
+      set({ searchResults: [] });
+      return;
+    }
+    
+    set({ isSearching: true });
+    try {
+      const res = await api.get(`/auth/users/search?query=${encodeURIComponent(query)}`);
+      set({ searchResults: res.data.users });
+    } catch (error) {
+      console.log('Error in searchUsers:', error);
+      toast.error(error.response?.data?.message || 'Failed to search users');
+    } finally {
+      set({ isSearching: false });
     }
   },
 

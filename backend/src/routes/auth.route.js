@@ -209,13 +209,69 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
-// Add this after router.get('/me', ...)
+// Get users that have had conversations with the current user
 router.get('/users', auth, async (req, res) => {
   try {
-    const users = await User.find({ _id: { $ne: req.user._id } }).select('id username avatar isOnline');
+    // Import message model
+    const Message = (await import('../models/message.model.js')).default;
+    
+    // Find all unique user IDs that have had conversations with the current user
+    const conversations = await Message.aggregate([
+      {
+        $match: {
+          $or: [
+            { senderId: req.user._id },
+            { receiverId: req.user._id }
+          ]
+        }
+      },
+      {
+        $group: {
+          _id: null,
+          userIds: {
+            $addToSet: {
+              $cond: [
+                { $eq: ['$senderId', req.user._id] },
+                '$receiverId',
+                '$senderId'
+              ]
+            }
+          }
+        }
+      }
+    ]);
+
+    // Extract user IDs from conversations
+    const conversationUserIds = conversations.length > 0 ? conversations[0].userIds : [];
+    
+    // Get users that have had conversations with the current user
+    const users = await User.find({ 
+      _id: { $in: conversationUserIds }
+    }).select('_id username avatar isOnline');
+    
     res.status(200).json({ success: true, users });
   } catch (error) {
+    console.error('Error fetching conversation users:', error);
     res.status(500).json({ success: false, message: 'Failed to fetch users', error: error.message });
+  }
+});
+
+// Search all users (for new conversations)
+router.get('/users/search', auth, async (req, res) => {
+  try {
+    const { query } = req.query;
+    
+    let searchQuery = { _id: { $ne: req.user._id } };
+    
+    if (query) {
+      searchQuery.username = { $regex: query, $options: 'i' };
+    }
+    
+    const users = await User.find(searchQuery).select('_id username avatar isOnline');
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    console.error('Error searching users:', error);
+    res.status(500).json({ success: false, message: 'Failed to search users', error: error.message });
   }
 });
 

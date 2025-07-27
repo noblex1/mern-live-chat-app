@@ -33,7 +33,7 @@ export const useAuthStore = create((set) => ({
     set({ isSigningUp: true });
     try {
       const res = await api.post('/auth/signup', data);
-      set({ authUser: res.data.user }); // Set authUser after signup
+      // Don't set authUser after signup - let user go to login page
       toast.success('Account created successfully');
       return true; // ⬅️ Inform component of success
     } catch (error) {
