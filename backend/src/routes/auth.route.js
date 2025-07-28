@@ -12,6 +12,48 @@ import cloudinary from '../lib/cloudinary.js';
 // Create router
 const router = express.Router();
 
+// Get user details by ID - GET /api/auth/user/:userId
+router.get('/user/:userId', auth, async (req, res) => {
+  try {
+    const { userId } = req.params;
+    
+    // Find user by ID, excluding password
+    const user = await User.findById(userId).select('-password');
+    
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found'
+      });
+    }
+    
+    res.status(200).json({
+      success: true,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        isOnline: user.isOnline,
+        createdAt: user.createdAt,
+        city: user.city,
+        relationshipStatus: user.relationshipStatus,
+        bio: user.bio,
+        location: user.location,
+        dateOfBirth: user.dateOfBirth
+      }
+    });
+    
+  } catch (error) {
+    console.error('Get user details error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error getting user details',
+      error: error.message
+    });
+  }
+});
+
 router.post('/signup', async (req, res) => {
   try {
     // Get user data from request body

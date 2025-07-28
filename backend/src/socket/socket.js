@@ -67,11 +67,11 @@ export const initializeSocket = (server) => {
     // Handle private messages
     socket.on('message:send', async (data) => {
       try {
-        const { receiverId, text, imageUrl } = data;
+        const { receiverId, text, imageUrl, messageId } = data;
         
         // Emit to sender (for immediate feedback)
         socket.emit('message:sent', {
-          _id: Date.now().toString(), // Temporary ID
+          _id: messageId,
           senderId: socket.user,
           receiverId,
           text,
@@ -79,9 +79,9 @@ export const initializeSocket = (server) => {
           createdAt: new Date()
         });
 
-        // Emit to receiver
+        // Emit to receiver with the same message structure
         socket.to(receiverId).emit('message:received', {
-          _id: Date.now().toString(), // Temporary ID
+          _id: messageId,
           senderId: socket.user,
           receiverId,
           text,
@@ -89,6 +89,7 @@ export const initializeSocket = (server) => {
           createdAt: new Date()
         });
       } catch (error) {
+        console.error('Socket message error:', error);
         socket.emit('message:error', { message: 'Failed to send message' });
       }
     });

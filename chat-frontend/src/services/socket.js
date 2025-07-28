@@ -77,13 +77,19 @@ class SocketService {
 
   on(event, callback) {
     if (this.socket) {
+      console.log(`🎧 Adding listener for event: ${event}`);
       this.socket.on(event, callback);
+    } else {
+      console.warn(`⚠️ Cannot add listener for ${event} - socket not connected`);
     }
   }
 
   off(event) {
     if (this.socket) {
+      console.log(`🎧 Removing listener for event: ${event}`);
       this.socket.off(event);
+    } else {
+      console.warn(`⚠️ Cannot remove listener for ${event} - socket not connected`);
     }
   }
 

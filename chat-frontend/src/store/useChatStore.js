@@ -20,6 +20,8 @@ export const useChatStore = create((set, get) => ({
   isSearching: false,
   onlineUsers: [],
   typingUsers: {},
+  profileDetails: null,
+  isProfileLoading: false,
 
   // Actions
   getUsers: async () => {
@@ -44,6 +46,27 @@ export const useChatStore = create((set, get) => ({
     } finally {
       set({ isUsersLoading: false });
     }
+  },
+
+  // Fetch user profile details
+  getUserProfile: async (userId) => {
+    set({ isProfileLoading: true });
+    try {
+      const res = await api.get(`/auth/user/${userId}`);
+      set({ profileDetails: res.data.user });
+      return res.data.user;
+    } catch (error) {
+      console.log('Error in getUserProfile:', error);
+      toast.error(error.response?.data?.message || 'Failed to load profile details');
+      return null;
+    } finally {
+      set({ isProfileLoading: false });
+    }
+  },
+
+  // Clear profile details
+  clearProfileDetails: () => {
+    set({ profileDetails: null });
   },
 
   getConversations: async () => {
@@ -134,12 +157,18 @@ export const useChatStore = create((set, get) => ({
       // Refresh conversations to include the new chat
       get().getConversations();
 
-      // Emit socket event for real-time delivery
-      socketService.emit('message:send', {
-        receiverId: selectedUser._id,
-        text: newMessage.text,
-        imageUrl: newMessage.imageUrl
-      });
+      // Emit socket event for real-time delivery with the actual message ID
+      if (socketService.getConnectionStatus()) {
+        console.log('📤 Emitting message via socket');
+        socketService.emit('message:send', {
+          receiverId: selectedUser._id,
+          text: newMessage.text,
+          imageUrl: newMessage.imageUrl,
+          messageId: newMessage._id
+        });
+      } else {
+        console.warn('⚠️ Socket not connected, message sent via API only');
+      }
 
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to send message');
@@ -153,18 +182,45 @@ export const useChatStore = create((set, get) => ({
     const socket = socketService.getSocket();
     
     if (!socket) {
-      console.log('No socket connection available');
+      console.log('❌ No socket connection available, attempting to connect...');
+      socketService.connect();
+      // Wait a bit for connection to establish
+      setTimeout(() => {
+        const connectedSocket = socketService.getSocket();
+        if (connectedSocket) {
+          console.log('✅ Socket connected, now subscribing to messages');
+          get().subscribeToMessages();
+        } else {
+          console.error('❌ Failed to establish socket connection');
+        }
+      }, 1000);
       return;
     }
+
+    console.log('🎧 Subscribing to real-time messages...');
 
     // Listen for incoming messages
     socket.on('message:received', (message) => {
       const { messages, selectedUser } = get();
       
-      // Only add message if it's from the currently selected user
-      if (selectedUser && 
-          (message.senderId === selectedUser._id || message.senderId._id === selectedUser._id)) {
-        set({ messages: [...messages, message] });
+      console.log('📨 Received message:', message);
+      console.log('👤 Selected user:', selectedUser);
+      
+      // Check if message is from the currently selected user
+      const messageSenderId = typeof message.senderId === 'object' ? message.senderId._id : message.senderId;
+      const selectedUserId = selectedUser?._id;
+      
+      if (selectedUser && messageSenderId === selectedUserId) {
+        console.log('✅ Adding message to chat');
+        // Check if message already exists to avoid duplicates
+        const messageExists = messages.some(m => m._id === message._id);
+        if (!messageExists) {
+          set({ messages: [...messages, message] });
+        } else {
+          console.log('⚠️ Message already exists, skipping duplicate');
+        }
+      } else {
+        console.log('❌ Message not from selected user or no user selected');
       }
     });
 
