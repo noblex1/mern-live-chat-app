@@ -1,10 +1,11 @@
 import express from "express";
 import { sendMessage, getMessages, getConversations, deleteMessage, getMessage } from "../controllers/message.controllers.js";
 import auth from "../middleware/auth.middleware.js";
+import { uploadImage, handleUploadError } from "../middleware/upload.middleware.js";
 
 const messageRouter = express.Router();
 
-messageRouter.post("/send", auth, sendMessage);                    // Send a message
+messageRouter.post("/send", auth, uploadImage, handleUploadError, sendMessage);                    // Send a message
 
 messageRouter.get("/conversations", auth, getConversations); // Get all conversations
 

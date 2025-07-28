@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 const MessageInput = () => {
   const [text, setText] = useState('');
   const [imagePreview, setImagePreview] = useState(null);
+  const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
   const { sendMessage } = useChatStore();
 
@@ -14,11 +15,15 @@ const MessageInput = () => {
     if (!file) return;
 
     if (file.type.startsWith('image/')) {
+      // Create preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setImagePreview(reader.result);
       };
       reader.readAsDataURL(file);
+      
+      // Store the file for upload
+      setSelectedFile(file);
     } else {
       toast.error('Please select an image file');
     }
@@ -26,22 +31,30 @@ const MessageInput = () => {
 
   const removeImage = () => {
     setImagePreview(null);
+    setSelectedFile(null);
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!text.trim() && !imagePreview) return;
+    if (!text.trim() && !selectedFile) return;
 
     try {
-      await sendMessage({
-        text: text.trim(),
-        imageUrl: imagePreview,
-      });
+      // Create FormData for file upload
+      const formData = new FormData();
+      formData.append('text', text.trim());
+      formData.append('receiverId', useChatStore.getState().selectedUser._id);
+      
+      if (selectedFile) {
+        formData.append('image', selectedFile);
+      }
+
+      await sendMessage(formData);
 
       // Clear form
       setText('');
       setImagePreview(null);
+      setSelectedFile(null);
       if (fileInputRef.current) fileInputRef.current.value = '';
     } catch (error) {
       toast.error('Failed to send message');
@@ -109,7 +122,7 @@ const MessageInput = () => {
         <button
           type="submit"
           className="btn btn-primary p-2"
-          disabled={!text.trim() && !imagePreview}
+          disabled={!text.trim() && !selectedFile}
         >
           <Send className="w-5 h-5" />
         </button>

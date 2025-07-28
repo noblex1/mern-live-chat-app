@@ -65,10 +65,25 @@ export const useChatStore = create((set, get) => ({
   sendMessage: async (messageData) => {
     const { selectedUser, messages } = get();
     try {
-      const res = await api.post('/messages/send', {
-        ...messageData,
-        receiverId: selectedUser._id,
-      });
+      // Check if messageData is FormData (for file uploads) or regular object
+      const isFormData = messageData instanceof FormData;
+      
+      let res;
+      if (isFormData) {
+        // For file uploads, use FormData
+        res = await api.post('/messages/send', messageData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+        });
+      } else {
+        // For regular text messages, use JSON
+        res = await api.post('/messages/send', {
+          ...messageData,
+          receiverId: selectedUser._id,
+        });
+      }
+      
       set({ messages: [...messages, res.data.data] });
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to send message');

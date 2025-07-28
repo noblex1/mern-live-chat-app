@@ -5,8 +5,11 @@ import userModel from "../models/user.model.js";
 export const sendMessage = async (req, res) => {
   try {
     // Get data from request
-    const { receiverId, text, imageUrl } = req.body;
+    const { receiverId, text } = req.body;
     const senderId = req.user._id; // From auth middleware
+    
+    // Get image URL from uploaded file if present
+    const imageUrl = req.file ? req.file.path : null;
     
     // Validate that we have either text or image
     if (!text && !imageUrl) {

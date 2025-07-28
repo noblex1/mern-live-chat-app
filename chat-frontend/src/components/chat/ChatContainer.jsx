@@ -99,14 +99,17 @@ const ChatContainer = () => {
                           : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-bl-none'
                       }`}
                     >
-                      {message.image && (
-                        <img
-                          src={message.image}
-                          alt="Attachment"
-                          className="max-w-full rounded-lg mb-2"
-                        />
+                      {message.imageUrl && (
+                        <div className="mb-2">
+                          <img
+                            src={message.imageUrl}
+                            alt="Attachment"
+                            className="max-w-full max-h-64 rounded-lg object-cover"
+                            loading="lazy"
+                          />
+                        </div>
                       )}
-                      {message.text && <p>{message.text}</p>}
+                      {message.text && <p className={message.imageUrl ? 'mt-2' : ''}>{message.text}</p>}
                     </div>
                   </div>
                 </div>
