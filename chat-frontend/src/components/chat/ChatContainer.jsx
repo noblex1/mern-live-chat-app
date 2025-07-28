@@ -13,6 +13,7 @@ const ChatContainer = () => {
     selectedUser,
     subscribeToMessages,
     unsubscribeFromMessages,
+    typingUsers,
   } = useChatStore();
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
@@ -116,6 +117,35 @@ const ChatContainer = () => {
               </div>
             );
           })}
+
+          {/* Typing Indicator */}
+          {typingUsers[selectedUser?._id] && (
+            <div className="flex justify-start">
+              <div className="flex gap-2 max-w-xs lg:max-w-md">
+                <div className="w-6 h-6 rounded-full border-2 border-white dark:border-gray-700 shadow-sm overflow-hidden flex-shrink-0">
+                  <img
+                    src={selectedUser?.avatar || '/avatar.png'}
+                    alt="avatar"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="flex flex-col">
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                    {typingUsers[selectedUser._id]}
+                  </div>
+                  <div className="bg-gray-200 dark:bg-gray-700 rounded-xl px-4 py-2 text-sm shadow rounded-bl-none">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* End of messages */}
           <div ref={messageEndRef} />
         </div>
       </div>

@@ -12,9 +12,9 @@ const Sidebar = () => {
     selectedUser, 
     setSelectedUser, 
     isUsersLoading, 
-    isSearching 
+    isSearching,
+    onlineUsers
   } = useChatStore();
-  const { onlineUsers } = useAuthStore();
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -37,7 +37,7 @@ const Sidebar = () => {
   const displayUsers = searchTerm.trim() ? searchResults : users;
   
   const filteredUsers = displayUsers.filter((user) => {
-    const matchesOnlineFilter = showOnlineOnly ? onlineUsers.includes(user._id) : true;
+    const matchesOnlineFilter = showOnlineOnly ? (user.isOnline || onlineUsers.includes(user._id)) : true;
     return matchesOnlineFilter;
   });
 
@@ -119,7 +119,7 @@ const Sidebar = () => {
                       alt={user.username}
                       className="w-12 h-12 object-cover rounded-full"
                     />
-                    {onlineUsers.includes(user._id) && (
+                    {(user.isOnline || onlineUsers.includes(user._id)) && (
                       <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white dark:ring-gray-800" />
                     )}
                   </div>
@@ -128,7 +128,7 @@ const Sidebar = () => {
                   <div className="hidden lg:block text-left min-w-0 flex-1">
                     <div className="font-medium truncate text-gray-900 dark:text-white">{user.username}</div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {onlineUsers.includes(user._id) ? 'Online' : 'Offline'}
+                      {(user.isOnline || onlineUsers.includes(user._id)) ? 'Online' : 'Offline'}
                     </div>
                   </div>
                 </button>
@@ -158,7 +158,7 @@ const Sidebar = () => {
                       alt={user.username}
                       className="w-12 h-12 object-cover rounded-full"
                     />
-                    {onlineUsers.includes(user._id) && (
+                    {(user.isOnline || onlineUsers.includes(user._id)) && (
                       <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white dark:ring-gray-800" />
                     )}
                   </div>
@@ -167,7 +167,7 @@ const Sidebar = () => {
                   <div className="hidden lg:block text-left min-w-0 flex-1">
                     <div className="font-medium truncate text-gray-900 dark:text-white">{user.username}</div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {onlineUsers.includes(user._id) ? 'Online' : 'Offline'}
+                      {(user.isOnline || onlineUsers.includes(user._id)) ? 'Online' : 'Offline'}
                     </div>
                   </div>
                 </button>

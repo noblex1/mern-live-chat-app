@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { socketService } from '../services/socket.js';
+import { useAuthStore } from './useAuthStore.js';
 
 const api = axios.create({
   baseURL: 'http://localhost:5000/api',
@@ -16,13 +18,26 @@ export const useChatStore = create((set, get) => ({
   isUsersLoading: false,
   isMessagesLoading: false,
   isSearching: false,
+  onlineUsers: [],
+  typingUsers: {},
 
   // Actions
   getUsers: async () => {
     set({ isUsersLoading: true });
     try {
-      const res = await api.get('/auth/users');
-      set({ users: res.data.users });
+      const res = await api.get('/auth/users/all');
+      const users = res.data.users;
+      
+      // Get current online users from Socket.IO
+      const { onlineUsers } = get();
+      
+      // Merge database online status with Socket.IO online status
+      const usersWithOnlineStatus = users.map(user => ({
+        ...user,
+        isOnline: onlineUsers.includes(user._id) || user.isOnline
+      }));
+      
+      set({ users: usersWithOnlineStatus });
     } catch (error) {
       console.log('Error in getUsers:', error);
       toast.error(error.response?.data?.message || 'Failed to load users');
@@ -84,7 +99,17 @@ export const useChatStore = create((set, get) => ({
         });
       }
       
-      set({ messages: [...messages, res.data.data] });
+      // Add message to local state immediately
+      const newMessage = res.data.data;
+      set({ messages: [...messages, newMessage] });
+
+      // Emit socket event for real-time delivery
+      socketService.emit('message:send', {
+        receiverId: selectedUser._id,
+        text: newMessage.text,
+        imageUrl: newMessage.imageUrl
+      });
+
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to send message');
     }
@@ -92,12 +117,113 @@ export const useChatStore = create((set, get) => ({
 
   setSelectedUser: (selectedUser) => set({ selectedUser }),
 
-  // Socket.io methods (will be implemented later)
+  // Socket.IO methods
   subscribeToMessages: () => {
-    // Will implement with Socket.io
+    const socket = socketService.getSocket();
+    
+    if (!socket) {
+      console.log('No socket connection available');
+      return;
+    }
+
+    // Listen for incoming messages
+    socket.on('message:received', (message) => {
+      const { messages, selectedUser } = get();
+      
+      // Only add message if it's from the currently selected user
+      if (selectedUser && 
+          (message.senderId === selectedUser._id || message.senderId._id === selectedUser._id)) {
+        set({ messages: [...messages, message] });
+      }
+    });
+
+    // Listen for sent message confirmation
+    socket.on('message:sent', (message) => {
+      // Message was sent successfully
+      console.log('Message sent successfully');
+    });
+
+    // Listen for online users
+    socket.on('user:online', (user) => {
+      const { onlineUsers } = get();
+      console.log('👤 User came online:', user, 'Current online users:', onlineUsers);
+      if (!onlineUsers.includes(user.userId)) {
+        const newOnlineUsers = [...onlineUsers, user.userId];
+        console.log('✅ Updated online users:', newOnlineUsers);
+        set({ onlineUsers: newOnlineUsers });
+      }
+    });
+
+    // Listen for offline users
+    socket.on('user:offline', (user) => {
+      const { onlineUsers } = get();
+      console.log('👤 User went offline:', user, 'Current online users:', onlineUsers);
+      const newOnlineUsers = onlineUsers.filter(id => id !== user.userId);
+      console.log('✅ Updated online users:', newOnlineUsers);
+      set({ onlineUsers: newOnlineUsers });
+    });
+
+    // Listen for initial online users list
+    socket.on('users:online', (users) => {
+      console.log('👥 Received initial online users:', users);
+      set({ onlineUsers: users });
+    });
+
+    // Listen for typing indicators
+    socket.on('typing:start', (data) => {
+      const { typingUsers } = get();
+      set({ 
+        typingUsers: { 
+          ...typingUsers, 
+          [data.userId]: data.username 
+        } 
+      });
+    });
+
+    socket.on('typing:stop', (data) => {
+      const { typingUsers } = get();
+      const newTypingUsers = { ...typingUsers };
+      delete newTypingUsers[data.userId];
+      set({ typingUsers: newTypingUsers });
+    });
+
+    // Initialize current user as online
+    const { authUser } = useAuthStore.getState();
+    if (authUser) {
+      const { onlineUsers } = get();
+      if (!onlineUsers.includes(authUser._id)) {
+        set({ onlineUsers: [...onlineUsers, authUser._id] });
+      }
+    }
   },
 
   unsubscribeFromMessages: () => {
-    // Will implement with Socket.io
+    // Don't disconnect the socket here since it's managed by auth store
+    // Just remove the event listeners
+    const socket = socketService.getSocket();
+    if (socket) {
+      socket.off('message:received');
+      socket.off('message:sent');
+      socket.off('user:online');
+      socket.off('user:offline');
+      socket.off('users:online');
+      socket.off('typing:start');
+      socket.off('typing:stop');
+    }
+  },
+
+  // Typing indicators
+  startTyping: () => {
+    const { selectedUser } = get();
+    if (selectedUser) {
+      socketService.emit('typing:start', { receiverId: selectedUser._id });
+    }
+  },
+
+  stopTyping: () => {
+    const { selectedUser } = get();
+    if (selectedUser) {
+      socketService.emit('typing:stop', { receiverId: selectedUser._id });
+    }
   },
 }));

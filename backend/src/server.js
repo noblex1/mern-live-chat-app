@@ -4,6 +4,8 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
+import { createServer } from 'http';
+import { initializeSocket } from './socket/socket.js';
 import messageRouter from './routes/message.route.js';
 import connectDB from './lib/db.js';
 import authRoutes from './routes/auth.route.js';
@@ -13,6 +15,10 @@ dotenv.config();
 
 // Create Express application
 const app = express();
+const server = createServer(app);
+
+// Initialize Socket.IO
+const io = initializeSocket(server);
 
 // Middleware
 app.use(express.json());
@@ -47,6 +53,7 @@ app.get('/', (req, res) => {
 });
 
 // Start the server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`🔌 Socket.IO server initialized`);
 });

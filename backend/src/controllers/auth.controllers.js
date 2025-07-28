@@ -335,3 +335,24 @@ export const updateSettings = async (req, res) => {
     });
   }
 };
+
+// Get all users (for chat)
+export const getUsers = async (req, res) => {
+  try {
+    const users = await userModel.find({ _id: { $ne: req.user._id } })
+      .select('username avatar isOnline')
+      .sort({ username: 1 });
+    
+    res.status(200).json({
+      success: true,
+      users
+    });
+  } catch (error) {
+    console.error('Get users error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error retrieving users',
+      error: error.message
+    });
+  }
+};

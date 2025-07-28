@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useChatStore } from '../../store/useChatStore';
 import { Image, Send, Smile, X } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -8,7 +8,27 @@ const MessageInput = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const fileInputRef = useRef(null);
-  const { sendMessage } = useChatStore();
+  const { sendMessage, startTyping, stopTyping } = useChatStore();
+
+  // Typing indicator
+  useEffect(() => {
+    let typingTimeout;
+    
+    if (text.trim()) {
+      startTyping();
+      typingTimeout = setTimeout(() => {
+        stopTyping();
+      }, 1000);
+    } else {
+      stopTyping();
+    }
+
+    return () => {
+      if (typingTimeout) {
+        clearTimeout(typingTimeout);
+      }
+    };
+  }, [text, startTyping, stopTyping]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];

@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import User from '../models/user.model.js';
 import generateJWT from '../utils/generateJWT.js';
 import auth from '../middleware/auth.middleware.js'
-import { checkAuth, signIn, SignOut, signUp, changePassword, deleteAccount, updateSettings } from '../controllers/auth.controllers.js';
+import { checkAuth, signIn, SignOut, signUp, changePassword, deleteAccount, updateSettings, getUsers } from '../controllers/auth.controllers.js';
 import cloudinary from '../lib/cloudinary.js';
 
 
@@ -255,6 +255,9 @@ router.get('/users', auth, async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to fetch users', error: error.message });
   }
 });
+
+// Get all users (for chat)
+router.get('/users/all', auth, getUsers);
 
 // Search all users (for new conversations)
 router.get('/users/search', auth, async (req, res) => {

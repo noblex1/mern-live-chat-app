@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { socketService } from '../services/socket.js';
 
 const api = axios.create({
   baseURL: 'http://localhost:5000/api',
@@ -14,13 +15,17 @@ export const useAuthStore = create((set) => ({
   isLoggingIn: false,
   isUpdatingProfile: false,
   isCheckingAuth: true,
-  onlineUsers: [],
 
   // Actions
   checkAuth: async () => {
     try {
       const res = await api.get('/auth/check');
       set({ authUser: res.data });
+      
+      // Initialize socket connection if user is authenticated
+      if (res.data) {
+        socketService.connect();
+      }
     } catch (error) {
       console.log('Error in checkAuth:', error);
       set({ authUser: null });
@@ -49,6 +54,10 @@ export const useAuthStore = create((set) => ({
     try {
       const res = await api.post('/auth/login', data);
       set({ authUser: res.data });
+      
+      // Initialize socket connection after successful login
+      socketService.connect();
+      
       toast.success('Logged in successfully');
     } catch (error) {
       toast.error(error.response?.data?.message || 'Login failed');
@@ -60,6 +69,10 @@ export const useAuthStore = create((set) => ({
   logout: async () => {
     try {
       await api.post('/auth/logout');
+      
+      // Disconnect socket when logging out
+      socketService.disconnect();
+      
       set({ authUser: null });
       toast.success('Logged out successfully');
     } catch (error) {
@@ -88,10 +101,6 @@ export const useAuthStore = create((set) => ({
     }
   },
 
-  setOnlineUsers: (users) => {
-    set({ onlineUsers: users });
-  },
-
   changePassword: async (currentPassword, newPassword) => {
     try {
       await api.put('/auth/change-password', { currentPassword, newPassword });
@@ -106,6 +115,10 @@ export const useAuthStore = create((set) => ({
   deleteAccount: async (password) => {
     try {
       await api.delete('/auth/delete-account', { data: { password } });
+      
+      // Disconnect socket when deleting account
+      socketService.disconnect();
+      
       set({ authUser: null });
       toast.success('Account deleted successfully');
       return true;
