@@ -6,6 +6,7 @@ import { Users, Search, MessageCircle } from 'lucide-react';
 const Sidebar = () => {
   const { 
     getUsers, 
+    getConversations,
     users, 
     searchUsers, 
     searchResults, 
@@ -19,19 +20,23 @@ const Sidebar = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    getUsers();
-  }, [getUsers]);
+    // Load conversations (users with chat history) by default
+    getConversations();
+  }, [getConversations]);
 
   // Handle search input changes
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (searchTerm.trim()) {
         searchUsers(searchTerm);
+      } else {
+        // When search is cleared, reload conversations
+        getConversations();
       }
     }, 300);
 
     return () => clearTimeout(timeoutId);
-  }, [searchTerm, searchUsers]);
+  }, [searchTerm, searchUsers, getConversations]);
 
   // Determine which users to show
   const displayUsers = searchTerm.trim() ? searchResults : users;
@@ -54,7 +59,7 @@ const Sidebar = () => {
             <Users className="w-6 h-6 text-gray-600 dark:text-gray-400" />
           )}
           <span className="font-semibold text-gray-900 dark:text-white hidden lg:block">
-            {searchTerm.trim() ? 'Search Results' : 'Conversations'}
+            {searchTerm.trim() ? 'Search Results' : 'Recent Chats'}
           </span>
         </div>
 
@@ -67,7 +72,7 @@ const Sidebar = () => {
             <input
               type="text"
               className="input pl-10 text-sm"
-              placeholder="Search users to chat with..."
+              placeholder="Search all users..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -87,6 +92,15 @@ const Sidebar = () => {
               <span className="text-sm text-gray-600 dark:text-gray-400">Show online only</span>
             </label>
             <span className="text-xs text-gray-500 dark:text-gray-500">({onlineUsers.length - 1} online)</span>
+          </div>
+        )}
+        
+        {/* Info text for conversations */}
+        {!searchTerm.trim() && (
+          <div className="mt-2 hidden lg:block">
+            <p className="text-xs text-gray-500 dark:text-gray-400">
+              Showing users you've chatted with
+            </p>
           </div>
         )}
       </div>
@@ -176,8 +190,8 @@ const Sidebar = () => {
               {filteredUsers.length === 0 && (
                 <div className="text-center text-gray-500 dark:text-gray-400 py-8">
                   <MessageCircle className="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-4" />
-                  <p>No conversations yet</p>
-                  <p className="text-sm mt-2">Search for users to start chatting</p>
+                  <p>No recent chats</p>
+                  <p className="text-sm mt-2">Search for users to start a conversation</p>
                 </div>
               )}
             </>

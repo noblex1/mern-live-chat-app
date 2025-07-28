@@ -72,23 +72,21 @@ export const initializeSocket = (server) => {
         // Emit to sender (for immediate feedback)
         socket.emit('message:sent', {
           _id: Date.now().toString(), // Temporary ID
-          senderId: socket.userId,
+          senderId: socket.user,
           receiverId,
           text,
           imageUrl,
-          createdAt: new Date(),
-          senderId: socket.user
+          createdAt: new Date()
         });
 
         // Emit to receiver
         socket.to(receiverId).emit('message:received', {
           _id: Date.now().toString(), // Temporary ID
-          senderId: socket.userId,
+          senderId: socket.user,
           receiverId,
           text,
           imageUrl,
-          createdAt: new Date(),
-          senderId: socket.user
+          createdAt: new Date()
         });
       } catch (error) {
         socket.emit('message:error', { message: 'Failed to send message' });

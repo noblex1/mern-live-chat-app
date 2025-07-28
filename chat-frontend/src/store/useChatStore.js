@@ -46,6 +46,34 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
+  getConversations: async () => {
+    set({ isUsersLoading: true });
+    try {
+      const res = await api.get('/messages/conversations');
+      const conversations = res.data.data;
+      
+      // Get current online users from Socket.IO
+      const { onlineUsers } = get();
+      
+      // Merge database online status with Socket.IO online status
+      const conversationsWithOnlineStatus = conversations.map(user => ({
+        ...user,
+        isOnline: onlineUsers.includes(user._id) || user.isOnline
+      }));
+      
+      set({ users: conversationsWithOnlineStatus });
+    } catch (error) {
+      console.log('Error in getConversations:', error);
+      // Don't show error toast for empty conversations - this is normal
+      if (error.response?.status !== 404) {
+        toast.error(error.response?.data?.message || 'Failed to load conversations');
+      }
+      set({ users: [] });
+    } finally {
+      set({ isUsersLoading: false });
+    }
+  },
+
   searchUsers: async (query) => {
     if (!query.trim()) {
       set({ searchResults: [] });
@@ -102,6 +130,9 @@ export const useChatStore = create((set, get) => ({
       // Add message to local state immediately
       const newMessage = res.data.data;
       set({ messages: [...messages, newMessage] });
+
+      // Refresh conversations to include the new chat
+      get().getConversations();
 
       // Emit socket event for real-time delivery
       socketService.emit('message:send', {
