@@ -117,7 +117,14 @@ const SettingsPage = () => {
     try {
       const success = await deleteAccount(passwordData.currentPassword);
       if (success) {
-        logout();
+        // Account deletion already handles logout internally
+        // No need to call logout() here as the user no longer exists
+        setShowDeleteModal(false);
+        setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+        // Redirect to login page after a short delay to show success message
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1500);
       }
     } catch (error) {
       toast.error('Failed to delete account');

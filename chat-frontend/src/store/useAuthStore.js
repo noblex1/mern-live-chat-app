@@ -119,7 +119,18 @@ export const useAuthStore = create((set) => ({
       // Disconnect socket when deleting account
       socketService.disconnect();
       
+      // Clear user state without calling logout API (since user no longer exists)
       set({ authUser: null });
+      
+      // Clear any stored auth data
+      localStorage.removeItem('authUser');
+      sessionStorage.removeItem('authUser');
+      
+      // Clear any remaining cookies
+      document.cookie.split(";").forEach(function(c) { 
+        document.cookie = c.replace(/^ +/, "").replace(/=.*/, "=;expires=" + new Date().toUTCString() + ";path=/"); 
+      });
+      
       toast.success('Account deleted successfully');
       return true;
     } catch (error) {

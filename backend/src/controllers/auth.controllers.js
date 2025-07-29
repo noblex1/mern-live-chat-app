@@ -237,6 +237,8 @@ export const deleteAccount = async (req, res) => {
   try {
     const { password } = req.body;
     
+    console.log('Delete account request received for user:', req.user._id);
+    
     if (!password) {
       return res.status(400).json({
         success: false,
@@ -244,8 +246,17 @@ export const deleteAccount = async (req, res) => {
       });
     }
     
+    // Fetch user with password for verification
+    const userWithPassword = await userModel.findById(req.user._id);
+    if (!userWithPassword) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+    
     // Verify password
-    const isPasswordCorrect = await bcrypt.compare(password, req.user.password);
+    const isPasswordCorrect = await bcrypt.compare(password, userWithPassword.password);
     if (!isPasswordCorrect) {
       return res.status(400).json({
         success: false,
@@ -253,8 +264,32 @@ export const deleteAccount = async (req, res) => {
       });
     }
     
+    console.log('Password verified, proceeding with account deletion...');
+    
+    // Import message model
+    const messageModel = (await import('../models/message.model.js')).default;
+    
+    // Delete all messages associated with this user (as sender or receiver)
+    const deletedMessages = await messageModel.deleteMany({
+      $or: [
+        { senderId: req.user._id },
+        { receiverId: req.user._id }
+      ]
+    });
+    
+    console.log(`Deleted ${deletedMessages.deletedCount} messages for user`);
+    
     // Delete user account
-    await userModel.findByIdAndDelete(req.user._id);
+    const deletedUser = await userModel.findByIdAndDelete(req.user._id);
+    
+    if (!deletedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found"
+      });
+    }
+    
+    console.log('User account deleted successfully');
     
     // Clear the JWT cookie
     res.cookie('jwt', '', {
