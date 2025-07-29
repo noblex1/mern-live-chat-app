@@ -57,7 +57,7 @@ const ChatContainer = () => {
           {messages.map((message) => {
             // Handle both populated and unpopulated senderId
             const senderId = typeof message.senderId === 'object' ? message.senderId._id : message.senderId;
-            const isSent = String(senderId) === String(authUser?._id);
+            const isSent = String(senderId) === String(authUser?.id);
             return (
               <div
                 key={message._id}
