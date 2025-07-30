@@ -175,6 +175,91 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
+  // Edit a message
+  editMessage: async (messageId, newText) => {
+    const { messages } = get();
+    try {
+      const res = await api.put(`/messages/${messageId}/edit`, { text: newText });
+      const updatedMessage = res.data.data;
+      
+      // Update message in local state
+      const updatedMessages = messages.map(msg => 
+        msg._id === messageId ? updatedMessage : msg
+      );
+      set({ messages: updatedMessages });
+
+      // Emit socket event for real-time update
+      if (socketService.getConnectionStatus()) {
+        socketService.emit('message:edit', {
+          messageId,
+          text: newText
+        });
+      }
+
+      return updatedMessage;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to edit message');
+    }
+  },
+
+  // Delete a message
+  deleteMessage: async (messageId) => {
+    const { messages } = get();
+    try {
+      await api.delete(`/messages/${messageId}`);
+      
+      // Remove message from local state
+      const updatedMessages = messages.filter(msg => msg._id !== messageId);
+      set({ messages: updatedMessages });
+
+      // Emit socket event for real-time deletion
+      if (socketService.getConnectionStatus()) {
+        socketService.emit('message:delete', { messageId });
+      }
+
+      return true;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to delete message');
+    }
+  },
+
+  // Pin/Unpin a message
+  pinMessage: async (messageId) => {
+    const { messages } = get();
+    try {
+      const res = await api.patch(`/messages/${messageId}/pin`);
+      const updatedMessage = res.data.data;
+      
+      // Update message in local state
+      const updatedMessages = messages.map(msg => 
+        msg._id === messageId ? updatedMessage : msg
+      );
+      set({ messages: updatedMessages });
+
+      // Emit socket event for real-time pin toggle
+      if (socketService.getConnectionStatus()) {
+        socketService.emit('message:pin', {
+          messageId,
+          isPinned: updatedMessage.isPinned
+        });
+      }
+
+      return updatedMessage;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to pin message');
+    }
+  },
+
+  // Get pinned messages for a conversation
+  getPinnedMessages: async (userId) => {
+    try {
+      const res = await api.get(`/messages/${userId}/pinned`);
+      return res.data.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to get pinned messages');
+    }
+  },
+
   setSelectedUser: (selectedUser) => set({ selectedUser }),
 
   // Socket.IO methods
@@ -274,6 +359,31 @@ export const useChatStore = create((set, get) => ({
       set({ typingUsers: newTypingUsers });
     });
 
+    // Listen for message edits
+    socket.on('message:edited', (data) => {
+      const { messages } = get();
+      const updatedMessages = messages.map(msg => 
+        msg._id === data.messageId ? { ...msg, text: data.text, isEdited: true, editedAt: new Date() } : msg
+      );
+      set({ messages: updatedMessages });
+    });
+
+    // Listen for message deletions
+    socket.on('message:deleted', (data) => {
+      const { messages } = get();
+      const updatedMessages = messages.filter(msg => msg._id !== data.messageId);
+      set({ messages: updatedMessages });
+    });
+
+    // Listen for message pin toggles
+    socket.on('message:pinned', (data) => {
+      const { messages } = get();
+      const updatedMessages = messages.map(msg => 
+        msg._id === data.messageId ? { ...msg, isPinned: data.isPinned, pinnedAt: data.isPinned ? new Date() : null } : msg
+      );
+      set({ messages: updatedMessages });
+    });
+
     // Initialize current user as online
     const { authUser } = useAuthStore.getState();
     if (authUser) {
@@ -296,6 +406,9 @@ export const useChatStore = create((set, get) => ({
       socket.off('users:online');
       socket.off('typing:start');
       socket.off('typing:stop');
+      socket.off('message:edited');
+      socket.off('message:deleted');
+      socket.off('message:pinned');
     }
   },
 

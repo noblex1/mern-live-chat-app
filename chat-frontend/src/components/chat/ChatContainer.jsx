@@ -1,9 +1,11 @@
 import { useChatStore } from '../../store/useChatStore';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import ChatHeader from './ChatHeader';
 import MessageInput from './MessageInput';
+import Message from './Message';
+import PinnedMessages from './PinnedMessages';
 import { useAuthStore } from '../../store/useAuthStore';
-import { formatMessageTime } from '../../lib/utils';
+import { Pin } from 'lucide-react';
 
 const ChatContainer = () => {
   const {
@@ -14,15 +16,22 @@ const ChatContainer = () => {
     subscribeToMessages,
     unsubscribeFromMessages,
     typingUsers,
+    editMessage,
+    deleteMessage,
+    pinMessage,
+    getPinnedMessages,
   } = useChatStore();
   const { authUser } = useAuthStore();
   const messageEndRef = useRef(null);
+  const [showPinnedMessages, setShowPinnedMessages] = useState(false);
+  const [pinnedMessagesCount, setPinnedMessagesCount] = useState(0);
 
   useEffect(() => {
     if (selectedUser?._id) {
       console.log('🔄 Loading messages for user:', selectedUser._id);
       getMessages(selectedUser._id);
       subscribeToMessages();
+      fetchPinnedMessagesCount();
     }
     return () => unsubscribeFromMessages();
   }, [selectedUser?._id, getMessages, subscribeToMessages, unsubscribeFromMessages]);
@@ -33,6 +42,53 @@ const ChatContainer = () => {
       messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
+
+  const fetchPinnedMessagesCount = async () => {
+    try {
+      const pinnedMessages = await getPinnedMessages(selectedUser._id);
+      setPinnedMessagesCount(pinnedMessages.length);
+    } catch (error) {
+      console.error('Failed to fetch pinned messages count:', error);
+    }
+  };
+
+  const handleMessageUpdate = async (messageId, newText) => {
+    try {
+      await editMessage(messageId, newText);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const handleMessageDelete = async (messageId) => {
+    try {
+      await deleteMessage(messageId);
+      // Update pinned messages count if needed
+      await fetchPinnedMessagesCount();
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const handleMessagePin = async (messageId) => {
+    try {
+      await pinMessage(messageId);
+      // Update pinned messages count
+      await fetchPinnedMessagesCount();
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const handleUnpinMessage = async (messageId) => {
+    try {
+      await pinMessage(messageId);
+      // Update pinned messages count
+      await fetchPinnedMessagesCount();
+    } catch (error) {
+      console.error('Failed to unpin message:', error);
+    }
+  };
 
   if (isMessagesLoading) {
     return (
@@ -51,67 +107,43 @@ const ChatContainer = () => {
       {/* Fixed Header */}
       <ChatHeader />
 
+      {/* Pinned Messages Banner */}
+      {pinnedMessagesCount > 0 && (
+        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800 px-4 py-3">
+          <button
+            onClick={() => setShowPinnedMessages(true)}
+            className="flex items-center gap-2 text-sm font-medium text-yellow-800 dark:text-yellow-200 hover:text-yellow-900 dark:hover:text-yellow-100 transition-colors w-full justify-center"
+          >
+            <Pin className="w-4 h-4" />
+            <span>{pinnedMessagesCount} pinned message{pinnedMessagesCount !== 1 ? 's' : ''}</span>
+            <span className="text-xs opacity-75">(click to view)</span>
+          </button>
+        </div>
+      )}
+
+      {/* Pinned Messages Modal */}
+      {showPinnedMessages && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <PinnedMessages
+            selectedUser={selectedUser}
+            onClose={() => setShowPinnedMessages(false)}
+            onUnpinMessage={handleUnpinMessage}
+          />
+        </div>
+      )}
+
       {/* Scrollable Messages Area */}
       <div className="flex-1 overflow-y-auto min-h-0">
         <div className="p-4 space-y-4">
-          {messages.map((message) => {
-            // Handle both populated and unpopulated senderId
-            const senderId = typeof message.senderId === 'object' ? message.senderId._id : message.senderId;
-            const isSent = String(senderId) === String(authUser?.id);
-            return (
-              <div
-                key={message._id}
-                className={`flex w-full ${isSent ? 'justify-end' : 'justify-start'}`}
-              >
-                <div
-                  className={`flex gap-2 max-w-xs lg:max-w-md ${isSent ? 'flex-row-reverse' : 'flex-row'}`}
-                >
-                  {/* Avatar - only show for received messages on left, sent messages on right */}
-                  <div className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-700 shadow-sm overflow-hidden flex-shrink-0">
-                    <img
-                      src={
-                        isSent
-                          ? authUser?.avatar || '/avatar.png'
-                          : (typeof message.senderId === 'object' ? message.senderId.avatar : selectedUser?.avatar) || '/avatar.png'
-                      }
-                      alt="avatar"
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-
-                  {/* Message Content */}
-                  <div className={`flex flex-col ${isSent ? 'items-end' : 'items-start'}`}>
-                    {/* Time */}
-                    <div className={`text-xs text-gray-500 dark:text-gray-400 mb-1 ${isSent ? 'text-right' : 'text-left'}`}>
-                      {formatMessageTime(message.createdAt)}
-                    </div>
-
-                    {/* Message Bubble */}
-                    <div
-                      className={`rounded-2xl px-4 py-2 text-sm shadow max-w-xs lg:max-w-md break-words ${
-                        isSent
-                          ? 'bg-blue-600 text-white rounded-br-md'
-                          : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-bl-md'
-                      }`}
-                    >
-                      {message.imageUrl && (
-                        <div className="mb-2">
-                          <img
-                            src={message.imageUrl}
-                            alt="Attachment"
-                            className="max-w-full rounded-lg object-cover"
-                            style={{ maxHeight: '200px' }}
-                            loading="lazy"
-                          />
-                        </div>
-                      )}
-                      {message.text && <p className="text-sm whitespace-pre-wrap">{message.text}</p>}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+          {messages.map((message) => (
+            <Message
+              key={message._id}
+              message={message}
+              onMessageUpdate={handleMessageUpdate}
+              onMessageDelete={handleMessageDelete}
+              onMessagePin={handleMessagePin}
+            />
+          ))}
 
           {/* Typing Indicator */}
           {typingUsers[selectedUser?._id] && (

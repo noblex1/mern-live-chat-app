@@ -116,6 +116,17 @@ export const initializeSocket = (server) => {
       });
     });
 
+    // Handle message pinning
+    socket.on('message:pin', (data) => {
+      const { messageId, isPinned } = data;
+      // Emit to both sender and receiver for real-time pin updates
+      socket.broadcast.emit('message:pinned', {
+        messageId,
+        isPinned,
+        pinnedBy: socket.userId
+      });
+    });
+
     // Handle disconnection
     socket.on('disconnect', async () => {
       console.log(`User disconnected: ${socket.user.username} (${socket.userId})`);

@@ -265,3 +265,164 @@ export const getMessage = async (req, res) => {
     });
   }
 };
+
+// Edit a message (only sender can edit)
+export const editMessage = async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const { text } = req.body;
+    const userId = req.user._id;
+    
+    // Validate text
+    if (!text || text.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Message text cannot be empty"
+      });
+    }
+    
+    if (text.trim().length > 1000) {
+      return res.status(400).json({
+        success: false,
+        message: "Text message too long (max 1000 characters)"
+      });
+    }
+    
+    // Find the message
+    const message = await messageModel.findById(messageId);
+    
+    if (!message) {
+      return res.status(404).json({
+        success: false,
+        message: "Message not found"
+      });
+    }
+    
+    // Check if current user is the sender
+    if (message.senderId.toString() !== userId.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only edit your own messages"
+      });
+    }
+    
+    // Update the message
+    const updatedMessage = await messageModel.findByIdAndUpdate(
+      messageId,
+      {
+        text: text.trim(),
+        isEdited: true,
+        editedAt: new Date()
+      },
+      { new: true }
+    ).populate("senderId", "username avatar")
+     .populate("receiverId", "username avatar");
+    
+    res.status(200).json({
+      success: true,
+      message: "Message edited successfully",
+      data: updatedMessage
+    });
+    
+  } catch (error) {
+    console.error("Edit message error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error editing message",
+      error: error.message
+    });
+  }
+};
+
+// Pin/Unpin a message
+export const togglePinMessage = async (req, res) => {
+  try {
+    const { messageId } = req.params;
+    const userId = req.user._id;
+    
+    // Find the message
+    const message = await messageModel.findById(messageId);
+    
+    if (!message) {
+      return res.status(404).json({
+        success: false,
+        message: "Message not found"
+      });
+    }
+    
+    // Check if current user is involved in this conversation
+    const isInvolved = message.senderId.toString() === userId.toString() || 
+                      message.receiverId.toString() === userId.toString();
+    
+    if (!isInvolved) {
+      return res.status(403).json({
+        success: false,
+        message: "You can only pin messages from your conversations"
+      });
+    }
+    
+    // Toggle pin status
+    const newPinStatus = !message.isPinned;
+    const updateData = {
+      isPinned: newPinStatus,
+      pinnedAt: newPinStatus ? new Date() : null,
+      pinnedBy: newPinStatus ? userId : null
+    };
+    
+    const updatedMessage = await messageModel.findByIdAndUpdate(
+      messageId,
+      updateData,
+      { new: true }
+    ).populate("senderId", "username avatar")
+     .populate("receiverId", "username avatar")
+     .populate("pinnedBy", "username avatar");
+    
+    res.status(200).json({
+      success: true,
+      message: newPinStatus ? "Message pinned successfully" : "Message unpinned successfully",
+      data: updatedMessage
+    });
+    
+  } catch (error) {
+    console.error("Toggle pin message error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error toggling message pin",
+      error: error.message
+    });
+  }
+};
+
+// Get pinned messages for a conversation
+export const getPinnedMessages = async (req, res) => {
+  try {
+    const { userId } = req.params; // The other user's ID
+    const myId = req.user._id;     // Current user's ID from auth middleware
+    
+    // Find pinned messages between these two users
+    const pinnedMessages = await messageModel.find({
+      $or: [
+        { senderId: myId, receiverId: userId },
+        { senderId: userId, receiverId: myId }
+      ],
+      isPinned: true
+    })
+    .populate("senderId", "username avatar")
+    .populate("receiverId", "username avatar")
+    .populate("pinnedBy", "username avatar")
+    .sort({ pinnedAt: -1 }); // Most recently pinned first
+    
+    res.status(200).json({
+      success: true,
+      data: pinnedMessages
+    });
+    
+  } catch (error) {
+    console.error("Get pinned messages error:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server error retrieving pinned messages",
+      error: error.message
+    });
+  }
+};
