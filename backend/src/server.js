@@ -24,9 +24,14 @@ const io = initializeSocket(server);
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Updated CORS configuration
+// ✅ Updated CORS configuration to allow deployed frontend
 app.use(cors({
-  origin: ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:5173'],
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:5173',
+    'https://meebachat.onrender.com' // ✅ Deployed frontend allowed
+  ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
