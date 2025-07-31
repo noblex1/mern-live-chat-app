@@ -1,4 +1,5 @@
 import { io } from 'socket.io-client';
+import { SOCKET_URL } from '../config/api.js';
 
 class SocketService {
   constructor() {
@@ -19,7 +20,7 @@ class SocketService {
 
     console.log('🔌 Attempting to connect to Socket.IO server...');
 
-    this.socket = io('http://localhost:5000', {
+    this.socket = io(SOCKET_URL, {
       auth: {
         token: token
       },

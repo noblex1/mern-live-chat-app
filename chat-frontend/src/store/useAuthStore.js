@@ -2,9 +2,10 @@ import { create } from 'zustand';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { socketService } from '../services/socket.js';
+import { API_BASE_URL } from '../config/api.js';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: API_BASE_URL,
   withCredentials: true,
 });
 
