@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
-import { MessageSquare, Settings, User, LogOut } from 'lucide-react';
+import { Settings, User, LogOut } from 'lucide-react';
 
 const Navbar = () => {
   const { logout, authUser } = useAuthStore();
@@ -11,9 +11,11 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-blue-600 rounded-lg flex items-center justify-center">
-              <MessageSquare className="w-5 h-5 text-white" />
-            </div>
+            <img 
+              src="/MeebaChat logo.png" 
+              alt="MeebaChat Logo" 
+              className="w-9 h-9 object-contain"
+            />
             <span className="text-xl font-bold text-gray-900 dark:text-white">MeebaChat</span>
           </Link>
 

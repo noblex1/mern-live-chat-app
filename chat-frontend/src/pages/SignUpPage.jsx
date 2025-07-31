@@ -6,7 +6,6 @@ import {
   Loader2,
   Lock,
   Mail,
-  MessageSquare,
   User,
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -59,9 +58,11 @@ const SignUpPage = () => {
         <div className="w-full max-w-md space-y-8">
           <div className="text-center mb-8">
             <div className="flex flex-col items-center gap-2 group">
-              <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900 flex items-center justify-center group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
-                <MessageSquare className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-              </div>
+              <img 
+                src="/MeebaChat logo.png" 
+                alt="MeebaChat Logo" 
+                className="w-12 h-12 object-contain group-hover:scale-105 transition-transform"
+              />
               <h1 className="text-2xl font-bold mt-2 text-gray-900 dark:text-white">
                 Create Account
               </h1>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import AuthSkeleton from '../components/auth/AuthSkeleton';
 import { Link } from 'react-router-dom';
-import { Eye, EyeOff, Loader2, Lock, Mail, MessageSquare } from 'lucide-react';
+import { Eye, EyeOff, Loader2, Lock, Mail } from 'lucide-react';
 
 const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -25,9 +25,11 @@ const LoginPage = () => {
           {/* Logo */}
           <div className="text-center mb-8">
             <div className="flex flex-col items-center gap-2 group">
-              <div className="w-12 h-12 rounded-xl bg-blue-100 dark:bg-blue-900 flex items-center justify-center group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
-                <MessageSquare className="w-6 h-6 text-blue-600 dark:text-blue-400" />
-              </div>
+              <img 
+                src="/MeebaChat logo.png" 
+                alt="MeebaChat Logo" 
+                className="w-12 h-12 object-contain group-hover:scale-105 transition-transform"
+              />
               <h1 className="text-2xl font-bold mt-2 text-gray-900 dark:text-white">Welcome Back</h1>
               <p className="text-gray-600 dark:text-gray-400">Sign in to your account</p>
             </div>
