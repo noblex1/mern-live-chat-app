@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Edit2, Trash2, Pin, MoreVertical, Check, X, MessageSquare } from 'lucide-react';
+import { Edit2, Trash2, Pin, MoreVertical, Check, X } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { formatMessageTime } from '../../lib/utils';
 import toast from 'react-hot-toast';

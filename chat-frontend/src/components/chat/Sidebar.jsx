@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useChatStore } from '../../store/useChatStore';
-import { useAuthStore } from '../../store/useAuthStore';
 import { Users, Search, MessageCircle } from 'lucide-react';
 
 const Sidebar = () => {
   const { 
-    getUsers, 
     getConversations,
     users, 
     searchUsers, 

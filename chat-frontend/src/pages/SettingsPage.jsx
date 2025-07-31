@@ -4,7 +4,6 @@ import { useTheme } from '../contexts/ThemeContext';
 import {
   Bell,
   Globe,
-  Lock,
   Moon,
   Palette,
   Shield,
@@ -17,18 +16,16 @@ import {
   Eye,
   EyeOff,
   AlertTriangle,
-  CheckCircle,
   X,
   LogOut,
   User,
   Smartphone,
-  Database,
-  Settings as SettingsIcon
+  Database
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const SettingsPage = () => {
-  const { authUser, logout, updateProfile, changePassword, deleteAccount, updateSettings } = useAuthStore();
+  const { authUser, logout, changePassword, deleteAccount, updateSettings } = useAuthStore();
   const { theme, setTheme } = useTheme();
   const [activeTab, setActiveTab] = useState('account');
   const [isLoading, setIsLoading] = useState(false);

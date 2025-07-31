@@ -310,7 +310,7 @@ export const useChatStore = create((set, get) => ({
     });
 
     // Listen for sent message confirmation
-    socket.on('message:sent', (message) => {
+    socket.on('message:sent', (_message) => {
       // Message was sent successfully
       console.log('Message sent successfully');
     });

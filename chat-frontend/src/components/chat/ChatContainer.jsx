@@ -21,7 +21,7 @@ const ChatContainer = () => {
     pinMessage,
     getPinnedMessages,
   } = useChatStore();
-  const { authUser } = useAuthStore();
+  const { authUser: _authUser } = useAuthStore();
   const messageEndRef = useRef(null);
   const [showPinnedMessages, setShowPinnedMessages] = useState(false);
   const [pinnedMessagesCount, setPinnedMessagesCount] = useState(0);

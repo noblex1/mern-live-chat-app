@@ -1,5 +1,4 @@
 import { useChatStore } from '../../store/useChatStore';
-import { useAuthStore } from '../../store/useAuthStore';
 import { X, Phone, Video, MoreVertical } from 'lucide-react';
 import { useState } from 'react';
 import ProfileModal from './ProfileModal';
