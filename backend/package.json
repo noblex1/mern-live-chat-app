@@ -8,9 +8,13 @@
     "start": "node src/server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Your Name",
   "license": "ISC",
-  "description": "",
+  "description": "Backend for Live Chat App",
+  "author": "Your Name",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "type": "module",
   "dependencies": {
     "bcryptjs": "^3.0.2",
