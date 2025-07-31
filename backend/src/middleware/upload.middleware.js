@@ -1,25 +1,15 @@
 import multer from 'multer';
 import cloudinary from '../lib/cloudinary.js';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
 
-// Configure Cloudinary storage
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'chat-images',
-    allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
-    transformation: [{ width: 1000, height: 1000, crop: 'limit' }], // Limit image size
-  },
-});
+// Use memory storage instead
+const storage = multer.memoryStorage();
 
-// Configure multer
 const upload = multer({
   storage: storage,
   limits: {
     fileSize: 5 * 1024 * 1024, // 5MB limit
   },
   fileFilter: (req, file, cb) => {
-    // Check if file is an image
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
     } else {
@@ -28,8 +18,31 @@ const upload = multer({
   },
 });
 
-// Middleware for single image upload
+// Modified upload middleware
 export const uploadImage = upload.single('image');
+
+// Add a middleware to upload to Cloudinary
+export const uploadToCloudinary = (req, res, next) => {
+  if (!req.file) return next();
+  
+  try {
+    cloudinary.uploader.upload_stream(
+      {
+        folder: 'chat-images',
+        transformation: [{ width: 1000, height: 1000, crop: 'limit' }]
+      },
+      (error, result) => {
+        if (error) {
+          return res.status(500).json({ success: false, message: 'Upload failed' });
+        }
+        req.file.cloudinaryUrl = result.secure_url;
+        next();
+      }
+    ).end(req.file.buffer);
+  } catch (error) {
+    return res.status(500).json({ success: false, message: 'Upload failed' });
+  }
+};
 
 // Error handling middleware
 export const handleUploadError = (error, req, res, next) => {

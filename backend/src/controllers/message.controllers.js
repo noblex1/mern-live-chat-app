@@ -9,7 +9,7 @@ export const sendMessage = async (req, res) => {
     const senderId = req.user._id; // From auth middleware
     
     // Get image URL from uploaded file if present
-    const imageUrl = req.file ? req.file.path : null;
+    const imageUrl = req.file ? req.file.cloudinaryUrl : null;
     
     // Validate that we have either text or image
     if (!text && !imageUrl) {
