@@ -43,6 +43,9 @@ export const signUp = async (req, res) => {
 
     await newUser.save();
 
+    // Generate token for new user
+    const token = generateJWT(newUser._id, res);
+
     res.status(201).json({
       message: "User created successfully",
       user: {
@@ -50,7 +53,8 @@ export const signUp = async (req, res) => {
         username: newUser.username,
         email: newUser.email,
         avatar: newUser.avatar
-      }
+      },
+      token: token // Include token in response
     });
   } catch (error) {
     res.status(500).json({
@@ -110,7 +114,8 @@ export const signIn = async (req, res) => {
       relationshipStatus: user.relationshipStatus,
       bio: user.bio,
       location: user.location,
-      dateOfBirth: user.dateOfBirth
+      dateOfBirth: user.dateOfBirth,
+      token: token // Include token in response for frontend storage
     });
   } catch (error) {
     console.error("Login error:", error);

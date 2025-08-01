@@ -4,11 +4,26 @@ import toast from 'react-hot-toast';
 import { socketService } from '../services/socket.js';
 import { useAuthStore } from './useAuthStore.js';
 import { API_BASE_URL } from '../config/api.js';
+import { getAuthToken } from '../utils/auth.js';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
 });
+
+// Add request interceptor to include token in headers
+api.interceptors.request.use(
+  (config) => {
+    const token = getAuthToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export const useChatStore = create((set, get) => ({
   // State
@@ -269,17 +284,33 @@ export const useChatStore = create((set, get) => ({
     
     if (!socket) {
       console.log('❌ No socket connection available, attempting to connect...');
-      socketService.connect();
+      const newSocket = socketService.connect();
+      
+      if (!newSocket) {
+        console.error('❌ Failed to establish socket connection - no socket returned');
+        return;
+      }
+      
       // Wait a bit for connection to establish
       setTimeout(() => {
         const connectedSocket = socketService.getSocket();
-        if (connectedSocket) {
+        if (connectedSocket && socketService.getConnectionStatus()) {
           console.log('✅ Socket connected, now subscribing to messages');
           get().subscribeToMessages();
         } else {
-          console.error('❌ Failed to establish socket connection');
+          console.error('❌ Failed to establish socket connection - socket not ready');
+          // Try one more time after a longer delay
+          setTimeout(() => {
+            const retrySocket = socketService.getSocket();
+            if (retrySocket && socketService.getConnectionStatus()) {
+              console.log('✅ Socket connected on retry, now subscribing to messages');
+              get().subscribeToMessages();
+            } else {
+              console.error('❌ Socket connection failed after retry');
+            }
+          }, 3000);
         }
-      }, 1000);
+      }, 2000); // Increased timeout
       return;
     }
 

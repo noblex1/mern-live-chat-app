@@ -30,12 +30,14 @@ app.use(cors({
     'http://localhost:3000',
     'http://localhost:3001',
     'http://localhost:5173',
-    'https://meebachat.onrender.com', // ✅ Deployed frontend allowed
-    'https://mern-chat-758s.onrender.com' // ✅ Your deployed frontend URL
+    'https://meebachat.onrender.com',
+    'https://mern-chat-758s.onrender.com',
+    'https://hackchat-frontend.vercel.app' // Add your Vercel frontend URL
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie'],
+  exposedHeaders: ['Set-Cookie']
 }));
 
 // Get port from environment or use 5000
@@ -56,6 +58,15 @@ app.use('/api/auth', authRoutes);
 
 app.get('/', (req, res) => {
   res.send('Chat Server is Running and Connected to Database!');
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ 
+    status: 'OK', 
+    message: 'Server is running',
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Start the server

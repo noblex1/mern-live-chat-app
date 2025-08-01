@@ -3,12 +3,24 @@ import jwt from 'jsonwebtoken';
 import userModel from '../models/user.model.js';
 
 export const initializeSocket = (server) => {
+  console.log('🔌 Initializing Socket.IO server...');
+  
   const io = new Server(server, {
     cors: {
-      origin: "http://localhost:3000",
-      credentials: true
+      origin: [
+        "http://localhost:3000",
+        "http://localhost:3001", 
+        "http://localhost:5173",
+        "https://meebachat.onrender.com",
+        "https://mern-chat-758s.onrender.com",
+        "https://hackchat-frontend.vercel.app"
+      ],
+      credentials: true,
+      methods: ["GET", "POST"]
     }
   });
+
+  console.log('✅ Socket.IO server initialized with CORS configuration');
 
   // Track online users
   const onlineUsers = new Set();
@@ -16,23 +28,33 @@ export const initializeSocket = (server) => {
   // Socket authentication middleware
   io.use(async (socket, next) => {
     try {
+      console.log('🔐 Socket authentication attempt...');
+      console.log('🔐 Auth data:', socket.handshake.auth);
+      
       const token = socket.handshake.auth.token;
       if (!token) {
-        return next(new Error('Authentication error'));
+        console.log('Socket authentication failed: No token provided');
+        return next(new Error('Authentication error: No token provided'));
       }
 
+      console.log('🔐 Token received, verifying...');
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      console.log('🔐 Token verified, finding user...');
+      
       const user = await userModel.findById(decoded.userId).select('username avatar');
       
       if (!user) {
-        return next(new Error('User not found'));
+        console.log('Socket authentication failed: User not found');
+        return next(new Error('Authentication error: User not found'));
       }
 
       socket.userId = decoded.userId;
       socket.user = user;
+      console.log(`✅ Socket authentication successful for user: ${user.username}`);
       next();
     } catch (error) {
-      next(new Error('Authentication error'));
+      console.log('❌ Socket authentication failed:', error.message);
+      next(new Error('Authentication error: Invalid token'));
     }
   });
 

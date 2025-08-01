@@ -1,5 +1,7 @@
 import { io } from 'socket.io-client';
 import { SOCKET_URL } from '../config/api.js';
+import { useAuthStore } from '../store/useAuthStore.js';
+import { getAuthToken } from '../utils/auth.js';
 
 class SocketService {
   constructor() {
@@ -8,15 +10,41 @@ class SocketService {
   }
 
   connect() {
-    const token = document.cookie
-      .split('; ')
-      .find(row => row.startsWith('token='))
-      ?.split('=')[1];
+    // Get token using utility function
+    const token = getAuthToken();
+
+    // If still no token, try to get from auth store
+    if (!token) {
+      const authStore = useAuthStore.getState();
+      if (authStore.authUser) {
+        // If we have user data but no token, we need to re-authenticate
+        console.log('User authenticated but no token found, attempting to refresh...');
+        return null;
+      }
+    }
 
     if (!token) {
       console.error('No authentication token found');
       return null;
     }
+
+    console.log('🔑 Token found, attempting socket connection...');
+    console.log('🔌 Token value:', token.substring(0, 20) + '...');
+    console.log('🔌 Socket URL:', SOCKET_URL);
+
+    // Test if backend is reachable
+    fetch(`${SOCKET_URL}/health`, {
+      method: 'GET'
+    }).then(response => {
+      console.log('🔌 Backend reachability test:', response.status);
+      if (response.ok) {
+        console.log('✅ Backend is reachable');
+      } else {
+        console.error('❌ Backend responded with error status');
+      }
+    }).catch(error => {
+      console.error('❌ Backend not reachable:', error);
+    });
 
     console.log('🔌 Attempting to connect to Socket.IO server...');
 
@@ -24,8 +52,12 @@ class SocketService {
       auth: {
         token: token
       },
-      transports: ['websocket', 'polling']
+      transports: ['websocket', 'polling'],
+      timeout: 20000,
+      forceNew: true
     });
+
+    console.log('🔌 Socket instance created:', this.socket);
 
     this.socket.on('connect', () => {
       console.log('✅ Connected to Socket.IO server');
@@ -39,6 +71,18 @@ class SocketService {
 
     this.socket.on('connect_error', (error) => {
       console.error('Socket connection error:', error);
+      console.error('Error details:', {
+        message: error.message,
+        description: error.description,
+        context: error.context,
+        type: error.type
+      });
+      this.isConnected = false;
+    });
+
+    // Handle authentication errors specifically
+    this.socket.on('error', (error) => {
+      console.error('Socket authentication error:', error);
       this.isConnected = false;
     });
 

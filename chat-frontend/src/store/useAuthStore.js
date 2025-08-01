@@ -3,11 +3,28 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { socketService } from '../services/socket.js';
 import { API_BASE_URL } from '../config/api.js';
+import { setAuthToken, removeAuthToken } from '../utils/auth.js';
+
+import { getAuthToken } from '../utils/auth.js';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
   withCredentials: true,
 });
+
+// Add request interceptor to include token in headers
+api.interceptors.request.use(
+  (config) => {
+    const token = getAuthToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
 
 export const useAuthStore = create((set) => ({
   // State
@@ -30,6 +47,8 @@ export const useAuthStore = create((set) => ({
     } catch (error) {
       console.log('Error in checkAuth:', error);
       set({ authUser: null });
+      // Clear any stored token on auth failure
+      removeAuthToken();
     } finally {
       set({ isCheckingAuth: false });
     }
@@ -38,8 +57,20 @@ export const useAuthStore = create((set) => ({
   signup: async (data) => {
     set({ isSigningUp: true });
     try {
-      const _res = await api.post('/auth/signup', data);
-      // Don't set authUser after signup - let user go to login page
+      const res = await api.post('/auth/signup', data);
+      
+      // Store token if provided
+      if (res.data.token) {
+        setAuthToken(res.data.token);
+      }
+      
+      // Set user data if provided
+      if (res.data.user) {
+        set({ authUser: res.data.user });
+        // Initialize socket connection after successful signup
+        socketService.connect();
+      }
+      
       toast.success('Account created successfully');
       return true; // ⬅️ Inform component of success
     } catch (error) {
@@ -53,14 +84,27 @@ export const useAuthStore = create((set) => ({
   login: async (data) => {
     set({ isLoggingIn: true });
     try {
+      console.log('🔐 Attempting login...');
       const res = await api.post('/auth/login', data);
+      console.log('✅ Login successful, response:', res.data);
+      
       set({ authUser: res.data });
       
+      // Store token in localStorage as backup
+      if (res.data.token) {
+        console.log('💾 Storing token in localStorage...');
+        setAuthToken(res.data.token);
+      } else {
+        console.log('⚠️ No token in login response');
+      }
+      
       // Initialize socket connection after successful login
+      console.log('🔌 Initializing socket connection...');
       socketService.connect();
       
       toast.success('Logged in successfully');
     } catch (error) {
+      console.error('❌ Login failed:', error);
       toast.error(error.response?.data?.message || 'Login failed');
     } finally {
       set({ isLoggingIn: false });
@@ -73,6 +117,9 @@ export const useAuthStore = create((set) => ({
       
       // Disconnect socket when logging out
       socketService.disconnect();
+      
+      // Clear localStorage token
+      removeAuthToken();
       
       set({ authUser: null });
       toast.success('Logged out successfully');

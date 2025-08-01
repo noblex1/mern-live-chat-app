@@ -6,7 +6,7 @@ import User from '../models/user.model.js';
 const auth = async (req, res, next) => {
   try {
     // Get token from cookie or Authorization header
-    const token = req.cookies.jwt || req.header('Authorization')?.replace('Bearer ', '');
+    const token = req.cookies.jwt || req.headers.authorization?.replace('Bearer ', '') || req.header('Authorization')?.replace('Bearer ', '') || req.headers['x-auth-token'];
     
     // Check if token exists
     if (!token) {

@@ -12,8 +12,9 @@ const generateJWT = (userId, res) => {
   res.cookie('jwt', token, {
     maxAge: 24 * 60 * 60 * 1000,  // 24 hours in milliseconds
     httpOnly: true,               // Prevents XSS attacks
-    sameSite: 'strict',           // Prevents CSRF attacks
-    secure: process.env.NODE_ENV === 'production' // Use HTTPS in production
+    sameSite: 'none',             // Allow cross-origin requests
+    secure: true,                 // Always use secure in production
+    domain: process.env.NODE_ENV === 'production' ? '.onrender.com' : undefined
   });
   
   return token;

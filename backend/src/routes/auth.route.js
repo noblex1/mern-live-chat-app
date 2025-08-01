@@ -122,108 +122,15 @@ router.post('/signup', async (req, res) => {
 });
 
 // Login route - POST /api/auth/login
-router.post('/sign-in', signIn);
-
-router.get('/sign-out', auth, SignOut);
-
-router.get('/check', auth, checkAuth);
-
-// Login route - POST /api/auth/login
-router.post('/login', async (req, res) => {
-  try {
-    // Get login data from request
-    const { email, password } = req.body;
-    
-    // Check if email and password are provided
-    if (!email || !password) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please provide email and password'
-      });
-    }
-    
-    // Find user by email
-    const user = await User.findOne({ email: email });
-    
-    // If user doesn't exist
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid email or password'
-      });
-    }
-    
-    // Check if password is correct
-    const isPasswordCorrect = await bcrypt.compare(password, user.password);
-    
-    if (!isPasswordCorrect) {
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid email or password'
-      });
-    }
-    
-    // Update user's online status
-    user.isOnline = true;
-    await user.save();
-    
-    // Generate JWT token and set cookie
-    const token = generateJWT(user._id, res);
-    
-    // Send success response
-    res.status(200).json({
-      success: true,
-      message: 'Login successful',
-      token: token,
-      user: {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        avatar: user.avatar,
-        isOnline: user.isOnline
-      }
-    });
-    
-  } catch (error) {
-    console.error('Login error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error during login',
-      error: error.message
-    });
-  }
-});
+router.post('/login', signIn);
 
 // Logout route - POST /api/auth/logout
-router.post('/logout', auth, async (req, res) => {
-  try {
-    // Update user's online status to false
-    await User.findByIdAndUpdate(req.user._id, {
-      isOnline: false
-    });
-    
-    // Clear the JWT cookie
-    res.cookie('jwt', '', {
-      maxAge: 0,
-      httpOnly: true,
-      sameSite: 'strict',
-      secure: process.env.NODE_ENV === 'production'
-    });
-    
-    res.status(200).json({
-      success: true,
-      message: 'Logged out successfully'
-    });
-    
-  } catch (error) {
-    console.error('Logout error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error during logout',
-      error: error.message
-    });
-  }
-});
+router.post('/logout', auth, SignOut);
+
+// Check authentication route - GET /api/auth/check
+router.get('/check', auth, checkAuth);
+
+
 
 // Get current user route - GET /api/auth/me
 router.get('/me', auth, async (req, res) => {
