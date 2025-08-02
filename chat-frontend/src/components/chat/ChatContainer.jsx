@@ -1,3 +1,13 @@
+import React, { useEffect, useState, useRef } from 'react';
+import { useChatStore } from '../../store/chatStore';
+import { useAuthStore } from '../../store/authStore';
+
+import ChatHeader from './ChatHeader';
+import MessageInput from './MessageInput';
+import Pin from '../icons/Pin'; // Check this path!
+import PinnedMessages from './PinnedMessages';
+import Message from './Message';
+
 const ChatContainer = () => {
   const {
     messages,
@@ -12,6 +22,7 @@ const ChatContainer = () => {
     pinMessage,
     getPinnedMessages,
   } = useChatStore();
+  
   const { authUser: _authUser } = useAuthStore();
   const messageEndRef = useRef(null);
   const [showPinnedMessages, setShowPinnedMessages] = useState(false);
