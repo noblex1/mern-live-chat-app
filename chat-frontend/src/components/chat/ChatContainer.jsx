@@ -4,9 +4,10 @@ import { useAuthStore } from '../../store/useAuthStore';
 
 import ChatHeader from './ChatHeader';
 import MessageInput from './MessageInput';
-import Pin from '../icons/Pin'; // Check this path!
 import PinnedMessages from './PinnedMessages';
 import Message from './Message';
+
+import { BsPinAngleFill } from 'react-icons/bs'; // ✅ Replaces missing Pin component
 
 const ChatContainer = () => {
   const {
@@ -22,7 +23,7 @@ const ChatContainer = () => {
     pinMessage,
     getPinnedMessages,
   } = useChatStore();
-  
+
   const { authUser: _authUser } = useAuthStore();
   const messageEndRef = useRef(null);
   const [showPinnedMessages, setShowPinnedMessages] = useState(false);
@@ -108,7 +109,7 @@ const ChatContainer = () => {
             onClick={() => setShowPinnedMessages(true)}
             className="flex items-center gap-2 text-sm font-medium text-yellow-800 dark:text-yellow-200 hover:text-yellow-900 dark:hover:text-yellow-100 transition-colors w-full justify-center"
           >
-            <Pin className="w-4 h-4" />
+            <BsPinAngleFill className="w-4 h-4" />
             <span>{pinnedMessagesCount} pinned message{pinnedMessagesCount !== 1 ? 's' : ''}</span>
             <span className="text-xs opacity-75">(click to view)</span>
           </button>
