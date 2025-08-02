@@ -28,9 +28,6 @@ app.use(cookieParser());
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'http://localhost:3001',
-    'http://localhost:5173',
-    'https://meebachat.onrender.com',
     'https://mern-chat-758s.onrender.com'
   ],
   credentials: true,
