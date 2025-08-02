@@ -21,6 +21,7 @@ const Sidebar = () => {
     // Load conversations (users with chat history) by default
     getConversations();
   }, [getConversations]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Handle search input changes
   useEffect(() => {
@@ -47,19 +48,34 @@ const Sidebar = () => {
   if (isUsersLoading) return <SidebarSkeleton />;
 
   return (
-    <aside className="w-20 lg:w-80 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-all duration-200 h-full">
-      {/* Header - Fixed */}
-      <div className="border-b border-gray-200 dark:border-gray-700 p-5 flex-shrink-0">
-        <div className="flex items-center gap-2">
-          {searchTerm.trim() ? (
-            <Search className="w-6 h-6 text-gray-600 dark:text-gray-400" />
-          ) : (
-            <Users className="w-6 h-6 text-gray-600 dark:text-gray-400" />
-          )}
-          <span className="font-semibold text-gray-900 dark:text-white hidden lg:block">
-            {searchTerm.trim() ? 'Search Results' : 'Recent Chats'}
-          </span>
-        </div>
+    <>
+      {/* Mobile sidebar toggle button */}
+      <button
+        className="lg:hidden fixed top-4 left-4 z-50 bg-gray-800 text-white p-2 rounded-full shadow-md"
+        onClick={() => setSidebarOpen(true)}
+      >
+        <Users className="w-6 h-6" />
+      </button>
+      {/* Sidebar overlay for mobile */}
+      <div
+        className={`fixed inset-0 z-40 bg-black bg-opacity-40 transition-opacity duration-300 ${sidebarOpen ? 'block' : 'hidden'}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+      <aside
+        className={`fixed lg:static top-0 left-0 h-full w-64 lg:w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-transform duration-300 z-50 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
+      >
+        {/* Header - Fixed */}
+        <div className="border-b border-gray-200 dark:border-gray-700 p-5 flex-shrink-0">
+          <div className="flex items-center gap-2">
+            {searchTerm.trim() ? (
+              <Search className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+            ) : (
+              <Users className="w-6 h-6 text-gray-600 dark:text-gray-400" />
+            )}
+            <span className="font-semibold text-gray-900 dark:text-white hidden lg:block">
+              {searchTerm.trim() ? 'Search Results' : 'Recent Chats'}
+            </span>
+          </div>
 
         {/* Search */}
         <div className="mt-4 hidden lg:block">
@@ -196,7 +212,9 @@ const Sidebar = () => {
           )}
         </div>
       </div>
-    </aside>
+        {/* ...existing sidebar content... */}
+      </aside>
+    </>
   );
 };
 
@@ -204,6 +222,7 @@ const Sidebar = () => {
 const SidebarSkeleton = () => {
   return (
     <aside className="w-20 lg:w-80 border-r border-gray-200 dark:border-gray-700 flex flex-col h-full">
+      {/* Mobile skeleton: just a placeholder, no close button logic */}
       <div className="border-b border-gray-200 dark:border-gray-700 p-5 flex-shrink-0">
         <div className="flex items-center gap-2">
           <div className="w-6 h-6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />

@@ -1,12 +1,3 @@
-import { useChatStore } from '../../store/useChatStore';
-import { useEffect, useRef, useState } from 'react';
-import ChatHeader from './ChatHeader';
-import MessageInput from './MessageInput';
-import Message from './Message';
-import PinnedMessages from './PinnedMessages';
-import { useAuthStore } from '../../store/useAuthStore';
-import { Pin } from 'lucide-react';
-
 const ChatContainer = () => {
   const {
     messages,
@@ -28,7 +19,6 @@ const ChatContainer = () => {
 
   useEffect(() => {
     if (selectedUser?._id) {
-      console.log('🔄 Loading messages for user:', selectedUser._id);
       getMessages(selectedUser._id);
       subscribeToMessages();
       fetchPinnedMessagesCount();
@@ -38,7 +28,6 @@ const ChatContainer = () => {
 
   useEffect(() => {
     if (messageEndRef.current && messages) {
-      console.log('📜 Scrolling to bottom, messages count:', messages.length);
       messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages]);
@@ -63,7 +52,6 @@ const ChatContainer = () => {
   const handleMessageDelete = async (messageId) => {
     try {
       await deleteMessage(messageId);
-      // Update pinned messages count if needed
       await fetchPinnedMessagesCount();
     } catch (error) {
       throw error;
@@ -73,7 +61,6 @@ const ChatContainer = () => {
   const handleMessagePin = async (messageId) => {
     try {
       await pinMessage(messageId);
-      // Update pinned messages count
       await fetchPinnedMessagesCount();
     } catch (error) {
       throw error;
@@ -83,7 +70,6 @@ const ChatContainer = () => {
   const handleUnpinMessage = async (messageId) => {
     try {
       await pinMessage(messageId);
-      // Update pinned messages count
       await fetchPinnedMessagesCount();
     } catch (error) {
       console.error('Failed to unpin message:', error);
@@ -104,10 +90,7 @@ const ChatContainer = () => {
 
   return (
     <div className="flex flex-col h-full">
-      {/* Fixed Header */}
       <ChatHeader />
-
-      {/* Pinned Messages Banner */}
       {pinnedMessagesCount > 0 && (
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800 px-4 py-3">
           <button
@@ -120,8 +103,6 @@ const ChatContainer = () => {
           </button>
         </div>
       )}
-
-      {/* Pinned Messages Modal */}
       {showPinnedMessages && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
           <PinnedMessages
@@ -131,8 +112,6 @@ const ChatContainer = () => {
           />
         </div>
       )}
-
-      {/* Scrollable Messages Area */}
       <div className="flex-1 overflow-y-auto min-h-0">
         <div className="p-4 space-y-4">
           {messages.map((message) => (
@@ -144,8 +123,6 @@ const ChatContainer = () => {
               onMessagePin={handleMessagePin}
             />
           ))}
-
-          {/* Typing Indicator */}
           {typingUsers[selectedUser?._id] && (
             <div className="flex justify-start">
               <div className="flex gap-2 max-w-xs lg:max-w-md">
@@ -171,13 +148,9 @@ const ChatContainer = () => {
               </div>
             </div>
           )}
-
-          {/* End of messages */}
           <div ref={messageEndRef} />
         </div>
       </div>
-
-      {/* Fixed Input */}
       <MessageInput />
     </div>
   );
