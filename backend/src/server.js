@@ -31,8 +31,7 @@ app.use(cors({
     'http://localhost:3001',
     'http://localhost:5173',
     'https://meebachat.onrender.com',
-    'https://mern-chat-758s.onrender.com',
-    'https://hackchat-frontend.vercel.app' // Add your Vercel frontend URL
+    'https://mern-chat-758s.onrender.com'
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -66,6 +65,24 @@ app.get('/health', (req, res) => {
     status: 'OK', 
     message: 'Server is running',
     timestamp: new Date().toISOString()
+  });
+});
+
+// Safe catch-all for any unmatched API routes
+app.use('/api/:notFoundRoute', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'API route not found',
+    path: req.originalUrl
+  });
+});
+
+// Catch-all route for any other routes (for SPA routing)
+app.all('*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found',
+    path: req.originalUrl
   });
 });
 
