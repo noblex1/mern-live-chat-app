@@ -77,13 +77,26 @@ app.use('/api/:notFoundRoute', (req, res) => {
   });
 });
 
-// Catch-all route for any other routes (for SPA routing)
-app.all('*', (req, res) => {
-  res.status(404).json({
-    success: false,
-    message: 'Route not found',
-    path: req.originalUrl
-  });
+// Serve frontend for all non-API routes (SPA routing)
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, '../../chat-frontend/build')));
+
+app.get('*', (req, res) => {
+  // If the request does not start with /api, serve index.html
+  if (!req.originalUrl.startsWith('/api')) {
+    res.sendFile(path.join(__dirname, '../../chat-frontend/build/index.html'));
+  } else {
+    res.status(404).json({
+      success: false,
+      message: 'Route not found',
+      path: req.originalUrl
+    });
+  }
 });
 
 // Start the server
