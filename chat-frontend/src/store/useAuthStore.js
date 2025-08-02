@@ -87,22 +87,24 @@ export const useAuthStore = create((set) => ({
       console.log('🔐 Attempting login...');
       const res = await api.post('/auth/login', data);
       console.log('✅ Login successful, response:', res.data);
-      
-      set({ authUser: res.data });
-      
-      // Store token in localStorage as backup
-      if (res.data.token) {
-        console.log('💾 Storing token in localStorage...');
-        setAuthToken(res.data.token);
+
+      // Set user data if provided
+      if (res.data.user) {
+        set({ authUser: res.data.user });
+        // Store token in localStorage as backup
+        if (res.data.token) {
+          console.log('💾 Storing token in localStorage...');
+          setAuthToken(res.data.token);
+        } else {
+          console.log('⚠️ No token in login response');
+        }
+        // Initialize socket connection after successful login
+        console.log('🔌 Initializing socket connection...');
+        socketService.connect();
+        toast.success('Logged in successfully');
       } else {
-        console.log('⚠️ No token in login response');
+        toast.error('No user data returned from login');
       }
-      
-      // Initialize socket connection after successful login
-      console.log('🔌 Initializing socket connection...');
-      socketService.connect();
-      
-      toast.success('Logged in successfully');
     } catch (error) {
       console.error('❌ Login failed:', error);
       toast.error(error.response?.data?.message || 'Login failed');

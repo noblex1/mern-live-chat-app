@@ -104,17 +104,19 @@ export const signIn = async (req, res) => {
 
     // 6️⃣ Send response
     res.status(200).json({
-      id: user._id,
-      username: user.username,
-      email: user.email,
-      avatar: user.avatar,
-      isOnline: user.isOnline,
-      createdAt: user.createdAt,
-      city: user.city,
-      relationshipStatus: user.relationshipStatus,
-      bio: user.bio,
-      location: user.location,
-      dateOfBirth: user.dateOfBirth,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        avatar: user.avatar,
+        isOnline: user.isOnline,
+        createdAt: user.createdAt,
+        city: user.city,
+        relationshipStatus: user.relationshipStatus,
+        bio: user.bio,
+        location: user.location,
+        dateOfBirth: user.dateOfBirth
+      },
       token: token // Include token in response for frontend storage
     });
   } catch (error) {
