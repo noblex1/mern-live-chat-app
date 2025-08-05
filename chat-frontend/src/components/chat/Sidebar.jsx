@@ -59,12 +59,12 @@ const Sidebar = () => {
       </button>
       {/* Sidebar overlay for mobile */}
       <div
-        className={`lg:hidden fixed inset-0 z-40 bg-black bg-opacity-40 transition-opacity duration-300 ${sidebarOpen ? 'block' : 'hidden'}`}
+        className={`lg:hidden fixed inset-0 top-16 z-40 bg-black bg-opacity-40 transition-opacity duration-300 ${sidebarOpen ? 'block' : 'hidden'}`}
         aria-hidden={!sidebarOpen}
         onClick={() => setSidebarOpen(false)}
       />
       <aside
-        className={`fixed lg:static top-0 left-0 h-full w-11/12 max-w-xs sm:max-w-sm lg:w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-transform duration-300 z-50 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
+        className={`fixed lg:static top-16 lg:top-0 left-0 h-[calc(100vh-4rem)] lg:h-full w-11/12 max-w-xs sm:max-w-sm lg:w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-transform duration-300 z-50 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
         aria-label="Sidebar"
       >
         {/* Header - Fixed */}
