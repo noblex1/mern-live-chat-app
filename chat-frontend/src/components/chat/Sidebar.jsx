@@ -47,6 +47,7 @@ const Sidebar = () => {
 
   if (isUsersLoading) return <SidebarSkeleton />;
 
+  // Always render the sidebar toggle button on mobile, regardless of chat state
   return (
     <>
       {/* Mobile sidebar toggle button */}
