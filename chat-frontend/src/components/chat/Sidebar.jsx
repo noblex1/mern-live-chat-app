@@ -51,18 +51,21 @@ const Sidebar = () => {
     <>
       {/* Mobile sidebar toggle button */}
       <button
-        className="lg:hidden fixed top-4 left-4 z-50 bg-gray-800 text-white p-2 rounded-full shadow-md"
+        className="lg:hidden fixed top-4 left-4 z-50 bg-gray-800 text-white p-3 rounded-full shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        aria-label="Open sidebar menu"
         onClick={() => setSidebarOpen(true)}
       >
-        <Users className="w-6 h-6" />
+        <Users className="w-7 h-7" />
       </button>
       {/* Sidebar overlay for mobile */}
       <div
-        className={`fixed inset-0 z-40 bg-black bg-opacity-40 transition-opacity duration-300 ${sidebarOpen ? 'block' : 'hidden'}`}
+        className={`lg:hidden fixed inset-0 z-40 bg-black bg-opacity-40 transition-opacity duration-300 ${sidebarOpen ? 'block' : 'hidden'}`}
+        aria-hidden={!sidebarOpen}
         onClick={() => setSidebarOpen(false)}
       />
       <aside
-        className={`fixed lg:static top-0 left-0 h-full w-64 lg:w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-transform duration-300 z-50 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
+        className={`fixed lg:static top-0 left-0 h-full w-11/12 max-w-xs sm:max-w-sm lg:w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-transform duration-300 z-50 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
+        aria-label="Sidebar"
       >
         {/* Header - Fixed */}
         <div className="border-b border-gray-200 dark:border-gray-700 p-5 flex-shrink-0">
@@ -72,23 +75,25 @@ const Sidebar = () => {
             ) : (
               <Users className="w-6 h-6 text-gray-600 dark:text-gray-400" />
             )}
-            <span className="font-semibold text-gray-900 dark:text-white hidden lg:block">
+            <span className="font-semibold text-gray-900 dark:text-white hidden sm:inline-block lg:block text-base sm:text-lg">
               {searchTerm.trim() ? 'Search Results' : 'Recent Chats'}
             </span>
           </div>
 
         {/* Search */}
-        <div className="mt-4 hidden lg:block">
+        <div className="mt-4 block lg:block">
+          {/* Mobile search input */}
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search className="h-4 w-4 text-gray-400 dark:text-gray-500" />
             </div>
             <input
               type="text"
-              className="input pl-10 text-sm"
+              className="input pl-10 text-sm sm:text-base py-2 w-full rounded-md border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Search all users..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              aria-label="Search users"
             />
           </div>
         </div>
@@ -137,7 +142,7 @@ const Sidebar = () => {
                 <button
                   key={user._id}
                   onClick={() => setSelectedUser(user)}
-                  className={`w-full p-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+                  className={`w-full p-2 sm:p-3 flex items-center gap-2 sm:gap-3 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                     selectedUser?._id === user._id ? 'bg-blue-50 dark:bg-blue-900/20 border-r-2 border-blue-500' : ''
                   }`}
                 >
@@ -145,7 +150,7 @@ const Sidebar = () => {
                     <img
                       src={user.avatar || '/avatar.png'}
                       alt={user.username}
-                      className="w-12 h-12 object-cover rounded-full"
+                      className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-full"
                     />
                     {(user.isOnline || onlineUsers.includes(user._id)) && (
                       <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white dark:ring-gray-800" />
@@ -153,7 +158,7 @@ const Sidebar = () => {
                   </div>
 
                   {/* User info - only visible on larger screens */}
-                  <div className="hidden lg:block text-left min-w-0 flex-1">
+                  <div className="hidden sm:block text-left min-w-0 flex-1">
                     <div className="font-medium truncate text-gray-900 dark:text-white">{user.username}</div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
                       {(user.isOnline || onlineUsers.includes(user._id)) ? 'Online' : 'Offline'}
@@ -176,7 +181,7 @@ const Sidebar = () => {
                 <button
                   key={user._id}
                   onClick={() => setSelectedUser(user)}
-                  className={`w-full p-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${
+                  className={`w-full p-2 sm:p-3 flex items-center gap-2 sm:gap-3 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
                     selectedUser?._id === user._id ? 'bg-blue-50 dark:bg-blue-900/20 border-r-2 border-blue-500' : ''
                   }`}
                 >
@@ -184,7 +189,7 @@ const Sidebar = () => {
                     <img
                       src={user.avatar || '/avatar.png'}
                       alt={user.username}
-                      className="w-12 h-12 object-cover rounded-full"
+                      className="w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-full"
                     />
                     {(user.isOnline || onlineUsers.includes(user._id)) && (
                       <span className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white dark:ring-gray-800" />
@@ -192,7 +197,7 @@ const Sidebar = () => {
                   </div>
 
                   {/* User info - only visible on larger screens */}
-                  <div className="hidden lg:block text-left min-w-0 flex-1">
+                  <div className="hidden sm:block text-left min-w-0 flex-1">
                     <div className="font-medium truncate text-gray-900 dark:text-white">{user.username}</div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
                       {(user.isOnline || onlineUsers.includes(user._id)) ? 'Online' : 'Offline'}
