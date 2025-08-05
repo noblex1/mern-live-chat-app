@@ -50,14 +50,28 @@ const Sidebar = () => {
   return (
     <>
       {/* Mobile sidebar toggle button */}
-      <button
-        className="lg:hidden fixed top-4 left-2 z-50 bg-gray-800/80 text-white p-2 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
-        aria-label="Open sidebar menu"
-        style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}
-        onClick={() => setSidebarOpen(true)}
-      >
-        <Users className="w-5 h-5" />
-      </button>
+      <div className="lg:hidden fixed top-4 left-2 z-50" style={{ pointerEvents: 'auto' }}>
+  <button
+    className="bg-gray-800/80 text-white p-2 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
+    aria-label="Open sidebar menu"
+    style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}
+    onClick={() => setSidebarOpen(true)}
+    onFocus={() => setShowTooltip(true)}
+    onBlur={() => setShowTooltip(false)}
+    onMouseEnter={() => setShowTooltip(true)}
+    onMouseLeave={() => setShowTooltip(false)}
+  >
+    <Users className="w-5 h-5" />
+  </button>
+  {showTooltip && (
+    <div className="absolute left-12 top-1/2 -translate-y-1/2 bg-gray-900 text-white text-xs rounded px-2 py-1 shadow-lg animate-fade-in z-50"
+      role="tooltip"
+      aria-live="polite"
+      style={{ whiteSpace: 'nowrap' }}>
+      Open chats
+    </div>
+  )}
+</div>
       {/* Sidebar overlay for mobile */}
       <div
         className={`lg:hidden fixed inset-0 top-16 z-40 bg-black bg-opacity-50 transition-opacity duration-300 ${sidebarOpen ? 'block' : 'hidden'}`}
