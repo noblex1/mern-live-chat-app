@@ -59,13 +59,14 @@ const Sidebar = () => {
       </button>
       {/* Sidebar overlay for mobile */}
       <div
-        className={`lg:hidden fixed inset-0 top-16 z-40 bg-black bg-opacity-40 transition-opacity duration-300 ${sidebarOpen ? 'block' : 'hidden'}`}
+        className={`lg:hidden fixed inset-0 top-16 z-40 bg-black bg-opacity-50 transition-opacity duration-300 ${sidebarOpen ? 'block' : 'hidden'}`}
         aria-hidden={!sidebarOpen}
         onClick={() => setSidebarOpen(false)}
       />
       <aside
-        className={`fixed lg:static top-16 lg:top-0 left-0 h-[calc(100vh-4rem)] lg:h-full w-11/12 max-w-xs sm:max-w-sm lg:w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col transition-transform duration-300 z-50 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
+        className={`fixed lg:static top-16 lg:top-0 left-0 h-[calc(100vh-4rem)] lg:h-full w-full max-w-xs sm:max-w-sm lg:w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col shadow-xl transition-transform duration-300 z-[60] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
         aria-label="Sidebar"
+        style={{ touchAction: sidebarOpen ? 'none' : 'auto', overflowY: sidebarOpen ? 'auto' : 'unset' }}
       >
         {/* Header - Fixed */}
         <div className="border-b border-gray-200 dark:border-gray-700 p-5 flex-shrink-0">
