@@ -17,7 +17,7 @@ const Sidebar = () => {
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   // Sidebar open state for mobile
-  const [sidebarOpen, setSidebarOpen] = useState(() => window.innerWidth >= 1024);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [showTooltip, setShowTooltip] = useState(false);
 
   // Listen for resize to auto-open sidebar on desktop
@@ -65,7 +65,7 @@ const Sidebar = () => {
   // Only show on mobile (below lg)
   return (
     <>
-      <div className="lg:hidden fixed top-4 left-2 z-50" style={{ pointerEvents: 'auto' }}>
+      <div className="fixed top-4 left-2 z-50" style={{ pointerEvents: 'auto' }}>
         <button
           className="bg-gray-800/80 text-white p-2 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
           aria-label="Open sidebar menu"
@@ -89,14 +89,14 @@ const Sidebar = () => {
       </div>
       {/* Sidebar overlay for mobile */}
       <div
-        className={`lg:hidden fixed inset-0 top-0 z-40 bg-black bg-opacity-50 transition-opacity duration-300 ${sidebarOpen ? 'block' : 'hidden'}`}
+        className={`fixed inset-0 top-0 z-40 bg-black bg-opacity-50 transition-opacity duration-300 ${sidebarOpen ? 'block' : 'hidden'}`}
         aria-hidden={!sidebarOpen}
         onClick={() => setSidebarOpen(false)}
       />
       <aside
-        className={`fixed lg:static top-0 lg:top-0 left-0 h-full w-full max-w-xs sm:max-w-sm lg:w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col shadow-xl transition-transform duration-300 z-[60] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
+        className={`fixed top-0 left-0 h-full w-full max-w-xs sm:max-w-sm bg-white dark:bg-gray-900 border-4 border-blue-500 flex flex-col shadow-xl transition-transform duration-300 z-[60] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
         aria-label="Sidebar"
-        style={{ overflowY: 'auto' }}
+        style={{ overflowY: 'auto', background: '#fff' }}
       >
         {/* Header - Fixed */}
         <div className="border-b border-gray-200 dark:border-gray-700 p-5 flex-shrink-0">
