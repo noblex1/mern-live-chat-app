@@ -21,7 +21,7 @@ const Sidebar = () => {
     // Load conversations (users with chat history) by default
     getConversations();
   }, [getConversations]);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  
 
   // Handle search input changes
   useEffect(() => {
@@ -50,39 +50,12 @@ const Sidebar = () => {
   // Always render the sidebar toggle button on mobile, regardless of chat state
   return (
     <>
-      {/* Mobile sidebar toggle button */}
-      <div className="lg:hidden fixed top-4 left-2 z-50" style={{ pointerEvents: 'auto' }}>
-  <button
-    className="bg-gray-800/80 text-white p-2 rounded-full shadow focus:outline-none focus:ring-2 focus:ring-blue-400"
-    aria-label="Open sidebar menu"
-    style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.10)' }}
-    onClick={() => setSidebarOpen(true)}
-    onFocus={() => setShowTooltip(true)}
-    onBlur={() => setShowTooltip(false)}
-    onMouseEnter={() => setShowTooltip(true)}
-    onMouseLeave={() => setShowTooltip(false)}
-  >
-    <Users className="w-5 h-5" />
-  </button>
-  {showTooltip && (
-    <div className="absolute left-12 top-1/2 -translate-y-1/2 bg-gray-900 text-white text-xs rounded px-2 py-1 shadow-lg animate-fade-in z-50"
-      role="tooltip"
-      aria-live="polite"
-      style={{ whiteSpace: 'nowrap' }}>
-      Open chats
-    </div>
-  )}
-</div>
-      {/* Sidebar overlay for mobile */}
-      <div
-        className={`lg:hidden fixed inset-0 top-16 z-40 bg-black bg-opacity-50 transition-opacity duration-300 ${sidebarOpen ? 'block' : 'hidden'}`}
-        aria-hidden={!sidebarOpen}
-        onClick={() => setSidebarOpen(false)}
-      />
+
+
       <aside
-        className={`fixed lg:static top-16 lg:top-0 left-0 h-[calc(100vh-4rem)] lg:h-full w-full max-w-xs sm:max-w-sm lg:w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col shadow-xl transition-transform duration-300 z-[60] ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
+        className="h-full w-full max-w-xs sm:max-w-sm lg:w-80 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-700 flex flex-col shadow-xl z-[60]"
         aria-label="Sidebar"
-        style={{ touchAction: sidebarOpen ? 'none' : 'auto', overflowY: sidebarOpen ? 'auto' : 'unset' }}
+        style={{ overflowY: 'auto' }}
       >
         {/* Header - Fixed */}
         <div className="border-b border-gray-200 dark:border-gray-700 p-5 flex-shrink-0">
