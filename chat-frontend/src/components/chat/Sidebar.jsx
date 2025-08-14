@@ -100,8 +100,8 @@ const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile Drawer */}
-      <div className="mobile-drawer">
+      {/* Enhanced Mobile Drawer */}
+      <div className="mobile-drawer sidebar-mobile">
         {/* Overlay */}
         {sidebarOpen && (
           <div 
@@ -110,11 +110,11 @@ const Sidebar = () => {
           />
         )}
         
-        {/* Drawer Content */}
+        {/* Enhanced Drawer Content */}
         <div className={`mobile-drawer-content ${sidebarOpen ? 'mobile-drawer-open' : 'mobile-drawer-closed'}`}>
-          {/* Header */}
+          {/* Enhanced Header */}
           <div className="border-b border-gray-200 dark:border-gray-700 p-4 flex-shrink-0">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
                 {searchTerm.trim() ? (
                   <Search className="w-5 h-5 text-gray-600 dark:text-gray-400" />
@@ -127,22 +127,22 @@ const Sidebar = () => {
               </div>
               <button
                 onClick={() => setSidebarOpen(false)}
-                className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target"
+                className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target"
                 aria-label="Close sidebar"
               >
                 <X className="w-5 h-5 text-gray-600 dark:text-gray-400" />
               </button>
             </div>
 
-            {/* Enhanced Search Input */}
-            <div className="mt-4 relative">
+            {/* Enhanced Responsive Search Input */}
+            <div className="search-container">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Search className="h-4 w-4 text-gray-400 dark:text-gray-500" />
                 </div>
                 <input
                   type="text"
-                  className="input pl-10 pr-10 text-sm py-2.5 w-full rounded-xl border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-gray-50 dark:bg-gray-700 dark:text-gray-100"
+                  className="search-input search-input-mobile"
                   placeholder={searchTerm.trim() ? "Search users..." : "Search chats..."}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
@@ -159,7 +159,7 @@ const Sidebar = () => {
                 )}
               </div>
 
-              {/* Enhanced Search Suggestions with better mobile support */}
+              {/* Enhanced Search Suggestions */}
               {showSearchSuggestions && searchHistory.length > 0 && (
                 <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
                   <div className="p-3">
@@ -191,7 +191,7 @@ const Sidebar = () => {
             </div>
 
             {/* Enhanced Responsive Filter Controls */}
-            <div className="flex items-center justify-between px-1 py-2">
+            <div className="flex items-center justify-between px-1 py-2 mt-3">
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setShowFilters(!showFilters)}
@@ -217,49 +217,37 @@ const Sidebar = () => {
             </div>
 
             {/* Enhanced Filters */}
-            <div className="mt-3 space-y-2">
-              {/* Filter Toggle */}
-              <button
-                onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors"
-              >
-                <Filter className="w-4 h-4" />
-                Filters
-              </button>
-
-              {/* Filter Options */}
-              {showFilters && (
-                <div className="space-y-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                  {/* Online Filter */}
-                  <div className="flex items-center justify-between">
-                    <label className="cursor-pointer flex items-center gap-2">
-                      <input
-                        type="checkbox"
-                        checked={showOnlineOnly}
-                        onChange={(e) => setShowOnlineOnly(e.target.checked)}
-                        className="w-4 h-4 text-blue-600 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500"
-                      />
-                      <span className="text-sm text-gray-600 dark:text-gray-400">Online only</span>
-                    </label>
-                    <span className="text-xs text-gray-500 dark:text-gray-500">({onlineUsers.length - 1})</span>
-                  </div>
-
-                  {/* Sort Options */}
-                  <div className="flex items-center gap-2">
-                    <span className="text-sm text-gray-600 dark:text-gray-400">Sort by:</span>
-                    <select
-                      value={sortBy}
-                      onChange={(e) => setSortBy(e.target.value)}
-                      className="text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    >
-                      <option value="recent">Recent</option>
-                      <option value="name">Name</option>
-                      <option value="online">Online</option>
-                    </select>
-                  </div>
+            {showFilters && (
+              <div className="mt-3 space-y-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                {/* Online Filter */}
+                <div className="flex items-center justify-between">
+                  <label className="cursor-pointer flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={showOnlineOnly}
+                      onChange={(e) => setShowOnlineOnly(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600 rounded focus:ring-blue-500"
+                    />
+                    <span className="text-sm text-gray-600 dark:text-gray-400">Online only</span>
+                  </label>
+                  <span className="text-xs text-gray-500 dark:text-gray-500">({onlineUsers.length - 1})</span>
                 </div>
-              )}
-            </div>
+
+                {/* Sort Options */}
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-gray-600 dark:text-gray-400">Sort by:</span>
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="text-sm bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  >
+                    <option value="recent">Recent</option>
+                    <option value="name">Name</option>
+                    <option value="online">Online</option>
+                  </select>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Enhanced Users List */}
@@ -293,11 +281,11 @@ const Sidebar = () => {
         </div>
       </div>
 
-      {/* Desktop Sidebar - Enhanced */}
-      <aside className="hidden lg:block w-80 border-r border-gray-200 dark:border-gray-700 flex flex-col h-full bg-white dark:bg-gray-800">
-        {/* Header */}
+      {/* Enhanced Desktop Sidebar */}
+      <aside className="sidebar-desktop">
+        {/* Enhanced Header */}
         <div className="border-b border-gray-200 dark:border-gray-700 p-5 flex-shrink-0">
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mb-4">
             {searchTerm.trim() ? (
               <Search className="w-6 h-6 text-gray-600 dark:text-gray-400" />
             ) : (
@@ -309,9 +297,9 @@ const Sidebar = () => {
           </div>
 
           {/* Enhanced Responsive Search Bar */}
-          <div className="relative">
-            <div className="relative flex items-center">
-              <Search className="absolute left-3 w-4 h-4 text-gray-400 dark:text-gray-500 transition-colors" />
+          <div className="search-container">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-gray-500 transition-colors" />
               <input
                 type="text"
                 placeholder="Search users or messages..."
@@ -319,13 +307,13 @@ const Sidebar = () => {
                 onChange={(e) => setSearchTerm(e.target.value)}
                 onFocus={() => setShowSearchSuggestions(true)}
                 onBlur={() => setTimeout(() => setShowSearchSuggestions(false), 200)}
-                className="w-full pl-10 pr-10 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-gray-500 dark:placeholder-gray-400 touch-target"
-                style={{ fontSize: '16px' }} // Prevents zoom on iOS
+                className="search-input search-input-desktop"
+                aria-label="Search"
               />
               {searchTerm && (
                 <button
                   onClick={() => setSearchTerm('')}
-                  className="absolute right-3 p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full transition-colors touch-target"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 p-1 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-full transition-colors touch-target"
                   aria-label="Clear search"
                 >
                   <X className="w-3 h-3 text-gray-400 dark:text-gray-500" />
@@ -432,8 +420,6 @@ const Sidebar = () => {
           </div>
         </div>
       </aside>
-
-      {/* Mobile Menu Button - Removed in favor of bottom navigation */}
     </>
   );
 };
@@ -542,18 +528,16 @@ const EmptyState = ({ searchTerm, showOnlineOnly }) => {
   );
 };
 
-// Skeleton loader component
+// Enhanced Skeleton loader component
 const SidebarSkeleton = () => {
   return (
-    <aside className="w-80 xl:w-96 border-r border-gray-200 dark:border-gray-700 flex flex-col h-full bg-white dark:bg-gray-800 hidden lg:flex transition-all duration-300">
+    <aside className="sidebar-desktop">
       <div className="border-b border-gray-200 dark:border-gray-700 p-5 flex-shrink-0">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mb-4">
           <div className="w-6 h-6 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
           <div className="w-32 h-5 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
         </div>
-        <div className="mt-4">
-          <div className="w-full h-10 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" />
-        </div>
+        <div className="w-full h-10 bg-gray-200 dark:bg-gray-700 rounded-xl animate-pulse" />
       </div>
       <div className="flex-1 overflow-y-auto min-h-0">
         <div className="py-3">

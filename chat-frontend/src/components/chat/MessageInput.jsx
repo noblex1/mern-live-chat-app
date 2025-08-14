@@ -177,7 +177,7 @@ const MessageInput = () => {
         </div>
       )}
 
-      <form onSubmit={handleSendMessage} className="chat-input-container">
+      <form onSubmit={handleSendMessage} className="input-container">
         {/* File Upload */}
         <input
           type="file"
@@ -197,11 +197,11 @@ const MessageInput = () => {
           <Paperclip className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-400" />
         </button>
 
-        {/* Text Input Container */}
+        {/* Enhanced Text Input Container */}
         <div className="flex-1 relative min-w-0">
           <textarea
             ref={textareaRef}
-            className="chat-input-textarea"
+            className="input-textarea"
             placeholder="Type a message..."
             value={text}
             onChange={(e) => setText(e.target.value)}

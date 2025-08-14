@@ -41,7 +41,7 @@ const MobileMessageList = ({
     }
   }, [handleScroll]);
 
-  // Pull to refresh functionality
+  // Enhanced Pull to refresh functionality
   const handleTouchStart = useCallback(() => {
     if (messageListRef.current && messageListRef.current.scrollTop === 0) {
       setIsPulling(true);
@@ -87,7 +87,7 @@ const MobileMessageList = ({
     }
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
-  // Group messages by sender and time proximity
+  // Enhanced Group messages by sender and time proximity
   const groupMessages = (messages) => {
     if (!messages || messages.length === 0) return [];
 
@@ -137,8 +137,8 @@ const MobileMessageList = ({
   const messageGroups = groupMessages(messages);
 
   return (
-    <div className="flex-1 overflow-y-auto min-h-0" ref={messageListRef}>
-      {/* Pull to refresh indicator */}
+    <div className="chat-messages-responsive" ref={messageListRef}>
+      {/* Enhanced Pull to refresh indicator */}
       {isPulling && (
         <div 
           className="flex items-center justify-center py-4 text-sm text-gray-500 dark:text-gray-400 transition-all duration-200"
@@ -149,7 +149,7 @@ const MobileMessageList = ({
         </div>
       )}
 
-      <div className="p-4 space-y-2">
+      <div className="chat-messages-content">
         {messageGroups.map((group, groupIndex) => (
           <div key={`group-${groupIndex}`} className="space-y-1">
             {group.map((message) => (
@@ -166,11 +166,11 @@ const MobileMessageList = ({
           </div>
         ))}
         
-        {/* Typing Indicator */}
+        {/* Enhanced Typing Indicator */}
         {typingUsers[selectedUser?._id] && (
-          <div className="flex justify-start">
-            <div className="flex gap-2 max-w-[85%]">
-              <div className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-700 shadow-sm overflow-hidden flex-shrink-0">
+          <div className="flex justify-start animate-in slide-in-from-bottom-2 duration-300">
+            <div className="flex gap-2 sm:gap-3 max-w-[85%]">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-white dark:border-gray-700 shadow-sm overflow-hidden flex-shrink-0">
                 <img
                   src={selectedUser?.avatar || '/avatar.png'}
                   alt="avatar"
@@ -178,10 +178,10 @@ const MobileMessageList = ({
                 />
               </div>
               <div className="flex flex-col">
-                <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                <div className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">
                   {typingUsers[selectedUser._id]}
                 </div>
-                <div className="message-bubble-received px-4 py-2 text-sm shadow-sm">
+                <div className="message-bubble-received px-3 py-2 sm:px-4 sm:py-2.5 text-sm shadow-sm">
                   <div className="typing-indicator">
                     <div className="typing-dot"></div>
                     <div className="typing-dot" style={{ animationDelay: '0.1s' }}></div>
@@ -196,7 +196,7 @@ const MobileMessageList = ({
         <div ref={messageEndRef} />
       </div>
 
-      {/* New Message Indicator */}
+      {/* Enhanced New Message Indicator */}
       {isScrolledUp && messages && messages.length > 0 && (
         <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 z-30">
           <button

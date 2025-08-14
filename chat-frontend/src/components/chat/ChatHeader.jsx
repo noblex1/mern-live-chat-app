@@ -31,18 +31,18 @@ const ChatHeader = () => {
     <>
       <div className="mobile-header">
         <div className="flex items-center justify-between px-4 py-3">
-          {/* Left Section - Back Button & User Info */}
+          {/* Enhanced Left Section - Back Button & User Info */}
           <div className="flex items-center gap-3 flex-1 min-w-0">
-            {/* Back Button - Mobile Only */}
+            {/* Enhanced Back Button - Mobile Only */}
             <button
               onClick={handleBackClick}
-              className="lg:hidden p-2 -ml-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target"
+              className="menu-button menu-button-mobile"
               aria-label="Back to conversations"
             >
               <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             </button>
 
-            {/* Avatar - Clickable */}
+            {/* Enhanced Avatar - Clickable */}
             <div 
               className="relative cursor-pointer hover:opacity-80 transition-opacity haptic-feedback"
               onClick={handleProfileClick}
@@ -57,7 +57,7 @@ const ChatHeader = () => {
               )}
             </div>
 
-            {/* User Info - Also Clickable */}
+            {/* Enhanced User Info - Also Clickable */}
             <div 
               className="flex-1 min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
               onClick={handleProfileClick}
@@ -75,42 +75,42 @@ const ChatHeader = () => {
             </div>
           </div>
 
-          {/* Right Section - Action Buttons */}
-          <div className="flex items-center gap-1">
-            {/* Search Button - Mobile Only */}
+          {/* Enhanced Right Section - Action Buttons */}
+          <div className="menu-container">
+            {/* Enhanced Search Button - Mobile Only */}
             <button 
-              className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target"
+              className="menu-button menu-button-mobile"
               aria-label="Search messages"
             >
               <Search className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             </button>
 
-            {/* Profile Button - Mobile Only */}
+            {/* Enhanced Profile Button - Mobile Only */}
             <button 
               onClick={handleProfileClick}
-              className="lg:hidden p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target"
+              className="menu-button menu-button-mobile"
               aria-label="View profile"
             >
               <User className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             </button>
 
-            {/* Call Buttons - Hidden on very small screens */}
+            {/* Enhanced Call Buttons - Hidden on very small screens */}
             <button 
-              className="hidden sm:block p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target"
+              className="menu-button hidden sm:block"
               aria-label="Voice call"
             >
               <Phone className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             </button>
             <button 
-              className="hidden sm:block p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target"
+              className="menu-button hidden sm:block"
               aria-label="Video call"
             >
               <Video className="w-5 h-5 text-gray-600 dark:text-gray-400" />
             </button>
 
-            {/* More Options */}
+            {/* Enhanced More Options */}
             <button 
-              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target"
+              className="menu-button"
               aria-label="More options"
             >
               <MoreVertical className="w-5 h-5 text-gray-600 dark:text-gray-400" />

@@ -321,6 +321,63 @@
     -webkit-overflow-scrolling: touch;
   }
 
+  /* Enhanced Search Bar Responsiveness */
+  .search-container {
+    @apply relative w-full;
+  }
+
+  .search-input {
+    @apply w-full pl-10 pr-10 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-gray-500 dark:placeholder-gray-400;
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  .search-input-mobile {
+    @apply text-base py-3;
+  }
+
+  .search-input-tablet {
+    @apply text-sm py-2.5;
+  }
+
+  .search-input-desktop {
+    @apply text-sm py-2;
+  }
+
+  /* Enhanced Mobile Navigation */
+  .mobile-nav {
+    @apply fixed bottom-0 left-0 right-0 z-40 bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  .mobile-nav-container {
+    @apply flex items-center justify-around px-2 py-2;
+  }
+
+  .mobile-nav-button {
+    @apply flex flex-col items-center gap-1 p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 haptic-feedback touch-target active:scale-95;
+    min-height: 60px;
+    min-width: 60px;
+  }
+
+  .mobile-nav-button-active {
+    @apply bg-blue-50 dark:bg-blue-900/20 ring-1 ring-blue-200 dark:ring-blue-800;
+  }
+
+  /* Enhanced Chat Section Responsiveness */
+  .chat-section {
+    @apply flex-1 flex flex-col min-h-0 overflow-hidden;
+  }
+
+  .chat-messages-container {
+    @apply flex-1 overflow-y-auto min-h-0 pb-4 lg:pb-0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .chat-messages-content {
+    @apply p-3 sm:p-4 lg:p-6 space-y-2 sm:space-y-3 lg:space-y-4;
+  }
+
   /* Enhanced responsive breakpoints */
   /* Mobile (320px - 640px) */
   @media (max-width: 640px) {
@@ -373,6 +430,16 @@
       min-height: 48px;
       min-width: 48px;
     }
+
+    /* Mobile drawer improvements */
+    .mobile-drawer-content {
+      width: min(320px, 90vw);
+    }
+
+    /* Mobile search improvements */
+    .search-input {
+      @apply text-base py-3;
+    }
   }
 
   /* Tablet (641px - 1024px) */
@@ -384,12 +451,20 @@
     .mobile-drawer-content {
       width: min(380px, 50vw);
     }
+
+    .search-input {
+      @apply text-sm py-2.5;
+    }
   }
 
   /* Desktop (1025px+) */
   @media (min-width: 1025px) {
     .message-bubble {
       @apply max-w-lg;
+    }
+
+    .search-input {
+      @apply text-sm py-2;
     }
   }
 
@@ -439,6 +514,128 @@
 
   .responsive-margin {
     @apply m-2 sm:m-3 lg:m-4;
+  }
+
+  /* Enhanced Sidebar Responsiveness */
+  .sidebar-desktop {
+    @apply hidden lg:block w-80 xl:w-96 border-r border-gray-200 dark:border-gray-700 flex flex-col h-full bg-white dark:bg-gray-800;
+  }
+
+  .sidebar-mobile {
+    @apply lg:hidden;
+  }
+
+  /* Enhanced Search Bar Responsiveness */
+  .search-bar-container {
+    @apply relative w-full;
+  }
+
+  .search-bar-input {
+    @apply w-full pl-10 pr-10 py-2.5 text-sm bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 placeholder-gray-500 dark:placeholder-gray-400;
+  }
+
+  /* Responsive search input sizing */
+  @media (max-width: 640px) {
+    .search-bar-input {
+      @apply text-base py-3;
+      font-size: 16px;
+    }
+  }
+
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .search-bar-input {
+      @apply text-sm py-2.5;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .search-bar-input {
+      @apply text-sm py-2;
+    }
+  }
+
+  /* Enhanced Menu Responsiveness */
+  .menu-container {
+    @apply flex items-center gap-2;
+  }
+
+  .menu-button {
+    @apply p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target;
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .menu-button-mobile {
+    @apply lg:hidden;
+  }
+
+  .menu-button-desktop {
+    @apply hidden lg:block;
+  }
+
+  /* Enhanced Chat Layout Responsiveness */
+  .chat-layout {
+    @apply flex h-full overflow-hidden;
+  }
+
+  .chat-layout-mobile {
+    @apply lg:hidden h-full flex flex-col;
+  }
+
+  .chat-layout-desktop {
+    @apply hidden lg:block h-full;
+  }
+
+  .chat-main-content {
+    @apply flex-1 flex flex-col min-w-0;
+  }
+
+  /* Enhanced Message List Responsiveness */
+  .message-list-container {
+    @apply flex-1 overflow-y-auto min-h-0;
+  }
+
+  .message-list-mobile {
+    @apply lg:hidden;
+  }
+
+  .message-list-desktop {
+    @apply hidden lg:block;
+  }
+
+  /* Enhanced Input Responsiveness */
+  .input-container {
+    @apply flex items-end gap-2 p-3 sm:gap-3 sm:p-4;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+  }
+
+  .input-textarea {
+    @apply flex-1 resize-none border border-gray-300 dark:border-gray-600 rounded-2xl px-3 py-2 sm:px-4 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white transition-all duration-200;
+    min-height: 44px;
+    max-height: 120px;
+    line-height: 1.4;
+  }
+
+  /* Responsive input sizing */
+  @media (max-width: 640px) {
+    .input-textarea {
+      font-size: 16px;
+      min-height: 44px;
+    }
+  }
+
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .input-textarea {
+      font-size: 14px;
+      min-height: 40px;
+    }
+  }
+
+  @media (min-width: 1025px) {
+    .input-textarea {
+      font-size: 14px;
+      min-height: 38px;
+    }
   }
 }
 
@@ -550,5 +747,66 @@
 
   .backdrop-blur-lg {
     backdrop-filter: blur(16px);
+  }
+
+  /* Enhanced responsive utilities */
+  .responsive-w-full {
+    @apply w-full;
+  }
+
+  .responsive-max-w {
+    @apply max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg;
+  }
+
+  .responsive-text {
+    @apply text-sm sm:text-base lg:text-lg;
+  }
+
+  .responsive-padding {
+    @apply p-2 sm:p-3 lg:p-4;
+  }
+
+  .responsive-margin {
+    @apply m-2 sm:m-3 lg:m-4;
+  }
+
+  .responsive-gap {
+    @apply gap-2 sm:gap-3 lg:gap-4;
+  }
+
+  /* Enhanced mobile navigation utilities */
+  .mobile-nav-safe {
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+  }
+
+  .mobile-nav-button-safe {
+    min-height: 60px;
+    min-width: 60px;
+  }
+
+  /* Enhanced search utilities */
+  .search-responsive {
+    @apply w-full;
+  }
+
+  .search-input-responsive {
+    @apply text-base sm:text-sm lg:text-sm;
+    font-size: 16px;
+  }
+
+  /* Enhanced chat utilities */
+  .chat-responsive {
+    @apply flex-1 flex flex-col min-h-0 overflow-hidden;
+  }
+
+  .chat-messages-responsive {
+    @apply flex-1 overflow-y-auto min-h-0;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .chat-input-responsive {
+    @apply flex items-end gap-2 p-3 sm:gap-3 sm:p-4;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
   }
 }

@@ -82,9 +82,9 @@ const ChatContainer = () => {
 
   if (isMessagesLoading) {
     return (
-      <div className="flex flex-col h-full">
+      <div className="chat-section">
         <ChatHeader />
-        <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="chat-messages-container">
           <MessageSkeleton />
         </div>
         <MessageInput />
@@ -93,10 +93,10 @@ const ChatContainer = () => {
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="chat-section">
       <ChatHeader />
       
-      {/* Pinned Messages Banner */}
+      {/* Enhanced Pinned Messages Banner */}
       {pinnedMessagesCount > 0 && (
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800 px-4 py-3">
           <button
@@ -110,7 +110,7 @@ const ChatContainer = () => {
         </div>
       )}
 
-      {/* Pinned Messages Modal */}
+      {/* Enhanced Pinned Messages Modal */}
       {showPinnedMessages && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
           <PinnedMessages
@@ -122,8 +122,8 @@ const ChatContainer = () => {
       )}
 
       {/* Enhanced Responsive Message List */}
-      <div className="flex-1 overflow-y-auto min-h-0 pb-4 lg:pb-0">
-        <div className="lg:hidden">
+      <div className="chat-messages-container">
+        <div className="message-list-mobile">
           <MobileMessageList
             messages={messages}
             onMessageUpdate={handleMessageUpdate}
@@ -133,7 +133,7 @@ const ChatContainer = () => {
             selectedUser={selectedUser}
           />
         </div>
-        <div className="hidden lg:block">
+        <div className="message-list-desktop">
           <DesktopMessageList
             messages={messages}
             onMessageUpdate={handleMessageUpdate}
@@ -150,7 +150,7 @@ const ChatContainer = () => {
   );
 };
 
-// Desktop Message List Component
+// Enhanced Desktop Message List Component
 const DesktopMessageList = ({ 
   messages, 
   onMessageUpdate, 
@@ -217,7 +217,7 @@ const DesktopMessageList = ({
   const messageGroups = groupMessages(messages);
 
   return (
-    <div className="p-3 sm:p-4 space-y-2 sm:space-y-3">
+    <div className="chat-messages-content">
       {messageGroups.map((group, groupIndex) => (
         <div key={`group-${groupIndex}`} className="space-y-1">
           {group.map((message) => (
@@ -266,9 +266,10 @@ const DesktopMessageList = ({
   );
 };
 
+// Enhanced Message Skeleton Component
 const MessageSkeleton = () => {
   return (
-    <div className="p-3 sm:p-4 space-y-3 sm:space-y-4">
+    <div className="chat-messages-content">
       {[...Array(6)].map((_, i) => {
         const isSent = i % 2 === 1;
         return (

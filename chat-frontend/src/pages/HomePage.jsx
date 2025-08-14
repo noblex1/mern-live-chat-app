@@ -9,8 +9,8 @@ const HomePage = () => {
 
   return (
     <div className="mobile-container">
-      {/* Mobile Layout - Enhanced */}
-      <div className="lg:hidden h-full flex flex-col">
+      {/* Enhanced Mobile Layout */}
+      <div className="chat-layout-mobile">
         {selectedUser ? (
           <ChatContainer />
         ) : (
@@ -23,16 +23,16 @@ const HomePage = () => {
         {/* Mobile Sidebar - Always render for drawer functionality */}
         <Sidebar />
         
-        {/* Mobile Navigation */}
+        {/* Enhanced Mobile Navigation */}
         <MobileNavigation />
       </div>
 
-      {/* Desktop Layout - Unchanged */}
-      <div className="hidden lg:block h-full">
+      {/* Enhanced Desktop Layout */}
+      <div className="chat-layout-desktop">
         <div className="bg-white dark:bg-gray-800 h-full transition-colors duration-300">
-          <div className="flex h-full overflow-hidden">
+          <div className="chat-layout">
             <Sidebar />
-            <div className="flex-1 flex flex-col min-w-0">
+            <div className="chat-main-content">
               {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
             </div>
           </div>
