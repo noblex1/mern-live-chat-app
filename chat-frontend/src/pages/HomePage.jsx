@@ -7,8 +7,24 @@ const HomePage = () => {
   const { selectedUser } = useChatStore();
 
   return (
-    <div className="h-screen bg-gray-100 dark:bg-gray-900 transition-colors duration-300 pt-16">
-      <div className="h-full">
+    <div className="mobile-container">
+      {/* Mobile Layout - Enhanced */}
+      <div className="lg:hidden h-full flex flex-col">
+        {selectedUser ? (
+          <ChatContainer />
+        ) : (
+          <div className="flex-1 flex flex-col">
+            {/* Mobile: Show NoChatSelected when no user is selected */}
+            <NoChatSelected />
+          </div>
+        )}
+        
+        {/* Mobile Sidebar - Always render for drawer functionality */}
+        <Sidebar />
+      </div>
+
+      {/* Desktop Layout - Unchanged */}
+      <div className="hidden lg:block h-full">
         <div className="bg-white dark:bg-gray-800 h-full transition-colors duration-300">
           <div className="flex h-full overflow-hidden">
             <Sidebar />

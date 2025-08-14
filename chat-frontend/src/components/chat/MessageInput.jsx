@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useChatStore } from '../../store/useChatStore';
-import { Image, Send, Smile, X } from 'lucide-react';
+import { Send, Smile, Paperclip, Mic } from 'lucide-react';
 import toast from 'react-hot-toast';
 import EmojiPicker from 'emoji-picker-react';
 
@@ -9,9 +9,21 @@ const MessageInput = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const fileInputRef = useRef(null);
   const emojiPickerRef = useRef(null);
+  const textareaRef = useRef(null);
   const { sendMessage, startTyping, stopTyping } = useChatStore();
+
+  // Auto-resize textarea
+  const adjustTextareaHeight = () => {
+    const textarea = textareaRef.current;
+    if (textarea) {
+      textarea.style.height = 'auto';
+      const newHeight = Math.min(textarea.scrollHeight, 120); // Max 5 lines
+      textarea.style.height = `${newHeight}px`;
+    }
+  };
 
   // Typing indicator
   useEffect(() => {
@@ -32,6 +44,11 @@ const MessageInput = () => {
       }
     };
   }, [text, startTyping, stopTyping]);
+
+  // Adjust textarea height when text changes
+  useEffect(() => {
+    adjustTextareaHeight();
+  }, [text]);
 
   // Close emoji picker when clicking outside
   useEffect(() => {
@@ -75,16 +92,24 @@ const MessageInput = () => {
   const handleEmojiClick = (emojiObject) => {
     setText(prevText => prevText + emojiObject.emoji);
     setShowEmojiPicker(false);
+    // Focus back to textarea after emoji selection
+    setTimeout(() => textareaRef.current?.focus(), 100);
   };
 
   const toggleEmojiPicker = () => {
     setShowEmojiPicker(!showEmojiPicker);
+    if (!showEmojiPicker) {
+      // Close keyboard on mobile when opening emoji picker
+      textareaRef.current?.blur();
+    }
   };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!text.trim() && !selectedFile) return;
+    if (isSending) return;
 
+    setIsSending(true);
     try {
       // Create FormData for file upload
       const formData = new FormData();
@@ -103,33 +128,56 @@ const MessageInput = () => {
       setSelectedFile(null);
       setShowEmojiPicker(false);
       if (fileInputRef.current) fileInputRef.current.value = '';
+      
+      // Reset textarea height
+      if (textareaRef.current) {
+        textareaRef.current.style.height = '48px';
+      }
     } catch (error) {
       toast.error('Failed to send message');
+    } finally {
+      setIsSending(false);
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage(e);
+    }
+  };
+
+  const handleVoiceRecord = () => {
+    // TODO: Implement voice recording
+    toast.info('Voice recording coming soon!');
+  };
+
   return (
-    <div className="border-t border-gray-200 dark:border-gray-700 p-2 sm:p-4 bg-white dark:bg-gray-800 flex-shrink-0">
+    <div className="mobile-footer">
       {/* Image Preview */}
       {imagePreview && (
-        <div className="mb-3 flex items-center gap-2">
-          <div className="relative">
-            <img
-              src={imagePreview}
-              alt="Preview"
-              className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
-            />
-            <button
-              onClick={removeImage}
-              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gray-500 dark:bg-gray-600 flex items-center justify-center hover:bg-gray-600 dark:hover:bg-gray-500 transition-colors"
-            >
-              <X className="w-3 h-3 text-white" />
-            </button>
+        <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <img
+                src={imagePreview}
+                alt="Preview"
+                className="w-16 h-16 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+              />
+              <button
+                onClick={removeImage}
+                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gray-500 dark:bg-gray-600 flex items-center justify-center hover:bg-gray-600 dark:hover:bg-gray-500 transition-colors haptic-feedback touch-target"
+                aria-label="Remove image"
+              >
+                <span className="text-white text-xs">×</span>
+              </button>
+            </div>
+            <span className="text-sm text-gray-600 dark:text-gray-400">Image ready to send</span>
           </div>
         </div>
       )}
 
-      <form onSubmit={handleSendMessage} className="flex items-center gap-1 sm:gap-2">
+      <form onSubmit={handleSendMessage} className="chat-input-container">
         {/* File Upload */}
         <input
           type="file"
@@ -139,71 +187,83 @@ const MessageInput = () => {
           onChange={handleImageChange}
         />
 
-        {/* Image Button */}
+        {/* Attachment Button */}
         <button
           type="button"
-          className="p-1.5 sm:p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors flex-shrink-0"
+          className="p-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target flex-shrink-0"
           onClick={() => fileInputRef.current?.click()}
+          aria-label="Attach image"
         >
-          <Image className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-400" />
+          <Paperclip className="w-5 h-5 text-gray-600 dark:text-gray-400" />
         </button>
 
         {/* Text Input Container */}
         <div className="flex-1 relative min-w-0">
-          <input
-            type="text"
-            className="input pr-10 sm:pr-12 text-sm sm:text-base"
+          <textarea
+            ref={textareaRef}
+            className="chat-input-textarea"
             placeholder="Type a message..."
             value={text}
             onChange={(e) => setText(e.target.value)}
+            onKeyDown={handleKeyDown}
+            rows={1}
+            disabled={isSending}
           />
-          {/* Emoji Button - Responsive positioning and sizing */}
+          
+          {/* Emoji Button */}
           <button
             type="button"
-            className="absolute right-2 sm:right-3 top-1/2 transform -translate-y-1/2 p-1.5 sm:p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors flex-shrink-0 min-w-[32px] min-h-[32px] sm:min-w-[36px] sm:min-h-[36px] flex items-center justify-center"
+            className="absolute right-3 bottom-3 p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target flex-shrink-0"
             aria-label="Add emoji"
             onClick={toggleEmojiPicker}
           >
-            <Smile className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-600 dark:text-gray-400" />
+            <Smile className="w-4 h-4 text-gray-600 dark:text-gray-400" />
           </button>
 
           {/* Emoji Picker */}
           {showEmojiPicker && (
             <div 
               ref={emojiPickerRef}
-              className="absolute bottom-full right-0 mb-2 z-50 bg-white border border-gray-300 rounded-lg shadow-lg"
-              style={{
-                width: '300px',
-                height: '400px'
-              }}
+              className="absolute bottom-full right-0 mb-2 z-50 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg mobile-shadow-lg"
             >
-              <div className="p-2 border-b border-gray-200">
-                <span className="text-sm font-medium">Emoji Picker</span>
-              </div>
-              <div className="p-2">
-                <EmojiPicker
-                  onEmojiClick={handleEmojiClick}
-                  width={280}
-                  height={350}
-                  searchDisabled={false}
-                  skinTonesDisabled={true}
-                  lazyLoadEmojis={true}
-                  theme="light"
-                  searchPlaceholder="Search emoji..."
-                />
-              </div>
+              <EmojiPicker
+                onEmojiClick={handleEmojiClick}
+                width={280}
+                height={350}
+                searchDisabled={false}
+                skinTonesDisabled={true}
+                lazyLoadEmojis={true}
+                theme={document.documentElement.classList.contains('dark') ? 'dark' : 'light'}
+                searchPlaceholder="Search emoji..."
+              />
             </div>
           )}
         </div>
 
-        {/* Send Button */}
-        <button
-          type="submit"
-          className="btn btn-primary p-1.5 sm:p-2 flex-shrink-0 min-w-[32px] min-h-[32px] sm:min-w-[36px] sm:min-h-[36px] flex items-center justify-center"
-          disabled={!text.trim() && !selectedFile}
-        >
-          <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-        </button>
+        {/* Send/Voice Button */}
+        {text.trim() || selectedFile ? (
+          <button
+            type="submit"
+            className={`chat-send-button ${isSending ? 'opacity-50' : ''}`}
+            disabled={(!text.trim() && !selectedFile) || isSending}
+            aria-label="Send message"
+          >
+            {isSending ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Send className="w-4 h-4" />
+            )}
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="flex-shrink-0 w-10 h-10 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-400 rounded-full flex items-center justify-center transition-all duration-200 haptic-feedback touch-target"
+            onClick={handleVoiceRecord}
+            aria-label="Voice message"
+          >
+            <Mic className="w-4 h-4" />
+          </button>
+        )}
       </form>
     </div>
   );

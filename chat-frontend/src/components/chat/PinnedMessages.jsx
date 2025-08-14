@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Pin, X, MessageSquare } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { formatMessageTime } from '../../lib/utils';
@@ -8,13 +8,7 @@ const PinnedMessages = ({ selectedUser, onClose, onUnpinMessage }) => {
   const [pinnedMessages, setPinnedMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    if (selectedUser?._id) {
-      fetchPinnedMessages();
-    }
-  }, [selectedUser?._id]);
-
-  const fetchPinnedMessages = async () => {
+  const fetchPinnedMessages = useCallback(async () => {
     try {
       const response = await fetch(`http://localhost:5000/api/messages/${selectedUser._id}/pinned`, {
         credentials: 'include',
@@ -31,7 +25,13 @@ const PinnedMessages = ({ selectedUser, onClose, onUnpinMessage }) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [selectedUser?._id]);
+
+  useEffect(() => {
+    if (selectedUser?._id) {
+      fetchPinnedMessages();
+    }
+  }, [selectedUser?._id, fetchPinnedMessages]);
 
   const handleUnpin = async (messageId) => {
     try {

@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
-import { Edit2, Trash2, Pin, MoreVertical, Check, X } from 'lucide-react';
+import { Edit2, Trash2, Pin, MoreVertical, Check, X, Clock, CheckCheck } from 'lucide-react';
 import { useAuthStore } from '../../store/useAuthStore';
 import { formatMessageTime } from '../../lib/utils';
 import toast from 'react-hot-toast';
 
-const Message = ({ message, onMessageUpdate, onMessageDelete, onMessagePin }) => {
+const Message = ({ message, onMessageUpdate, onMessageDelete, onMessagePin, isFirstInGroup = false, isLastInGroup = false }) => {
   const { authUser } = useAuthStore();
   const [showMenu, setShowMenu] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -99,44 +99,66 @@ const Message = ({ message, onMessageUpdate, onMessageDelete, onMessagePin }) =>
     setShowMenu(false);
   };
 
+  // Message status component
+  const MessageStatus = () => {
+    if (!isSent) return null;
+    
+    return (
+      <div className="flex items-center gap-1 ml-2">
+        {message.isRead ? (
+          <CheckCheck className="w-3 h-3 text-blue-100" />
+        ) : message.isDelivered ? (
+          <CheckCheck className="w-3 h-3 text-gray-400" />
+        ) : (
+          <Clock className="w-3 h-3 text-gray-400" />
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className={`flex w-full ${isSent ? 'justify-end' : 'justify-start'}`}>
-      <div className={`flex gap-2 max-w-xs lg:max-w-md ${isSent ? 'flex-row-reverse' : 'flex-row'}`}>
-        {/* Avatar */}
-        <div className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-700 shadow-sm overflow-hidden flex-shrink-0">
-          <img
-            src={
-              isSent
-                ? authUser?.avatar || '/avatar.png'
-                : (typeof message.senderId === 'object' ? message.senderId.avatar : message.senderId?.avatar) || '/avatar.png'
-            }
-            alt="avatar"
-            className="w-full h-full object-cover"
-          />
-        </div>
+    <div className={`flex w-full ${isSent ? 'justify-end' : 'justify-start'} mb-1`}>
+      <div className={`flex gap-2 max-w-[85%] ${isSent ? 'flex-row-reverse' : 'flex-row'}`}>
+        {/* Avatar - Only show for first message in group */}
+        {isFirstInGroup && (
+          <div className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-700 shadow-sm overflow-hidden flex-shrink-0">
+            <img
+              src={
+                isSent
+                  ? authUser?.avatar || '/avatar.png'
+                  : (typeof message.senderId === 'object' ? message.senderId.avatar : message.senderId?.avatar) || '/avatar.png'
+              }
+              alt="avatar"
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
 
         {/* Message Content */}
-        <div className={`flex flex-col ${isSent ? 'items-end' : 'items-start'} relative group`}>
-          {/* Time and Edit Indicator */}
-          <div className={`text-xs text-gray-500 dark:text-gray-400 mb-1 ${isSent ? 'text-right' : 'text-left'} flex items-center gap-1`}>
-            {formatMessageTime(message.createdAt)}
-            {message.isEdited && (
-              <span className="text-xs text-gray-400 dark:text-gray-500">(edited)</span>
-            )}
-            {message.isPinned && (
-              <span className="text-xs text-yellow-600 dark:text-yellow-400 flex items-center gap-1">
-                <Pin className="w-3 h-3" />
-                pinned
-              </span>
-            )}
-          </div>
+        <div className={`flex flex-col ${isSent ? 'items-end' : 'items-start'} relative group max-w-full`}>
+          {/* Time and Edit Indicator - Only show for last message in group */}
+          {isLastInGroup && (
+            <div className={`text-xs text-gray-500 dark:text-gray-400 mb-1 ${isSent ? 'text-right' : 'text-left'} flex items-center gap-1`}>
+              {formatMessageTime(message.createdAt)}
+              {message.isEdited && (
+                <span className="text-xs text-gray-400 dark:text-gray-500">(edited)</span>
+              )}
+              {message.isPinned && (
+                <span className="text-xs text-yellow-600 dark:text-yellow-400 flex items-center gap-1">
+                  <Pin className="w-3 h-3" />
+                  pinned
+                </span>
+              )}
+              <MessageStatus />
+            </div>
+          )}
 
           {/* Message Bubble */}
           <div
-            className={`rounded-2xl px-4 py-2 text-sm shadow max-w-xs lg:max-w-md break-words relative ${
+            className={`message-bubble px-4 py-2.5 text-sm shadow-sm relative ${
               isSent
-                ? 'bg-blue-600 text-white rounded-br-md'
-                : 'bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white rounded-bl-md'
+                ? 'message-bubble-sent'
+                : 'message-bubble-received'
             } ${message.isPinned ? 'ring-2 ring-yellow-400 dark:ring-yellow-500 shadow-lg' : ''}`}
           >
             {/* Pin Indicator */}
@@ -152,9 +174,13 @@ const Message = ({ message, onMessageUpdate, onMessageDelete, onMessagePin }) =>
                 <img
                   src={message.imageUrl}
                   alt="Attachment"
-                  className="max-w-full rounded-lg object-cover"
+                  className="max-w-full rounded-lg object-cover cursor-pointer hover:opacity-90 transition-opacity"
                   style={{ maxHeight: '200px' }}
                   loading="lazy"
+                  onClick={() => {
+                    // TODO: Implement image viewer modal
+                    window.open(message.imageUrl, '_blank');
+                  }}
                 />
               </div>
             )}
@@ -162,9 +188,8 @@ const Message = ({ message, onMessageUpdate, onMessageDelete, onMessagePin }) =>
             {/* Text Content */}
             {isEditing ? (
               <div className="flex items-center gap-2">
-                <input
+                <textarea
                   ref={editInputRef}
-                  type="text"
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
                   onKeyDown={(e) => {
@@ -176,54 +201,58 @@ const Message = ({ message, onMessageUpdate, onMessageDelete, onMessagePin }) =>
                       handleCancelEdit();
                     }
                   }}
-                  className="flex-1 bg-transparent border-none outline-none text-sm"
+                  className="flex-1 bg-transparent border-none outline-none text-sm resize-none"
                   disabled={isLoading}
+                  rows={1}
                 />
                 <div className="flex gap-1">
                   <button
                     onClick={handleSaveEdit}
                     disabled={isLoading}
-                    className="p-1 hover:bg-white/20 rounded transition-colors"
+                    className="p-1 hover:bg-white/20 rounded transition-colors haptic-feedback touch-target"
+                    aria-label="Save edit"
                   >
                     <Check className="w-3 h-3" />
                   </button>
                   <button
                     onClick={handleCancelEdit}
                     disabled={isLoading}
-                    className="p-1 hover:bg-white/20 rounded transition-colors"
+                    className="p-1 hover:bg-white/20 rounded transition-colors haptic-feedback touch-target"
+                    aria-label="Cancel edit"
                   >
                     <X className="w-3 h-3" />
                   </button>
                 </div>
               </div>
             ) : (
-              <p className="text-sm whitespace-pre-wrap">{message.text}</p>
+              <p className="text-sm whitespace-pre-wrap break-words leading-relaxed">{message.text}</p>
             )}
           </div>
 
-          {/* Message Actions Menu */}
-          {!isEditing && (
+          {/* Message Actions Menu - Only show for last message in group */}
+          {isLastInGroup && !isEditing && (
             <div className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 transition-opacity">
               <div className="relative" ref={menuRef}>
                 <button
                   onClick={() => setShowMenu(!showMenu)}
-                  className={`p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors ${
+                  className={`p-1.5 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-all duration-200 haptic-feedback touch-target ${
                     isSent ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'
                   }`}
                   disabled={isLoading}
+                  aria-label="Message options"
                 >
                   <MoreVertical className="w-4 h-4" />
                 </button>
 
                 {/* Dropdown Menu */}
                 {showMenu && (
-                  <div className="absolute right-0 mt-1 w-32 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50">
+                  <div className="absolute right-0 mt-1 w-36 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 z-50 mobile-shadow-lg">
                     <div className="py-1">
                       {/* Edit Option - Only for sender */}
                       {isSent && (
                         <button
                           onClick={handleEdit}
-                          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left haptic-feedback transition-colors"
                           disabled={isLoading}
                         >
                           <Edit2 className="w-3 h-3" />
@@ -234,7 +263,7 @@ const Message = ({ message, onMessageUpdate, onMessageDelete, onMessagePin }) =>
                       {/* Pin/Unpin Option */}
                       <button
                         onClick={handlePin}
-                        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left"
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 w-full text-left haptic-feedback transition-colors"
                         disabled={isLoading}
                       >
                         <Pin className={`w-3 h-3 ${message.isPinned ? 'text-yellow-500' : ''}`} />
@@ -245,7 +274,7 @@ const Message = ({ message, onMessageUpdate, onMessageDelete, onMessagePin }) =>
                       {isSent && (
                         <button
                           onClick={handleDelete}
-                          className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 w-full text-left"
+                          className="flex items-center gap-2 px-3 py-2 text-sm text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 w-full text-left haptic-feedback transition-colors"
                           disabled={isLoading}
                         >
                           <Trash2 className="w-3 h-3" />

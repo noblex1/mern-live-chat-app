@@ -12,7 +12,9 @@ export const SOCKET_URL = isDevelopment
   : 'https://mern-live-chat-app-12.onrender.com'; // Updated to match your backend deployment
 
 // Export for use in other files
-export default {
+const config = {
   API_BASE_URL,
   SOCKET_URL
-}; 
+};
+
+export default config; 

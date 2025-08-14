@@ -10,11 +10,23 @@
     box-sizing: border-box;
   }
   
+  html {
+    /* Enable safe-area support */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+  
   body {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     line-height: 1.5;
     color: #021530;
     transition: background-color 0.3s ease, color 0.3s ease;
+    /* Prevent zoom on input focus on iOS */
+    -webkit-text-size-adjust: 100%;
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+    /* Prevent horizontal scroll */
+    overflow-x: hidden;
   }
 
   /* Dark mode styles */
@@ -25,6 +37,35 @@
 
   .dark {
     color-scheme: dark;
+  }
+
+  /* Mobile-specific base styles */
+  @media (max-width: 640px) {
+    body {
+      /* Prevent pull-to-refresh on mobile */
+      overscroll-behavior: none;
+      /* Improve touch scrolling */
+      -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Improve touch targets */
+    button, [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+    
+    /* Prevent text selection on interactive elements */
+    button, [role="button"], input, textarea {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    
+    /* Allow text selection in inputs */
+    input, textarea {
+      -webkit-user-select: text;
+      user-select: text;
+    }
   }
 }
 
@@ -56,6 +97,201 @@
   
   .link {
     @apply text-blue-600 hover:text-blue-700 font-medium dark:text-blue-400 dark:hover:text-blue-300;
+  }
+
+  /* Enhanced Mobile-optimized components */
+  .mobile-container {
+    @apply h-screen flex flex-col bg-gray-50 dark:bg-gray-900;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .mobile-header {
+    @apply sticky top-0 z-40 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 backdrop-blur-lg bg-white/95 dark:bg-gray-800/95;
+    padding-top: env(safe-area-inset-top);
+    /* Add subtle shadow for depth */
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .mobile-content {
+    @apply flex-1 overflow-hidden;
+  }
+
+  .mobile-footer {
+    @apply sticky bottom-0 z-40 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700 backdrop-blur-lg bg-white/95 dark:bg-gray-800/95;
+    padding-bottom: env(safe-area-inset-bottom);
+    /* Add subtle shadow for depth */
+    box-shadow: 0 -1px 3px 0 rgba(0, 0, 0, 0.1), 0 -1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  /* Enhanced Message bubble styles - WhatsApp-like */
+  .message-bubble {
+    @apply max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg break-words relative;
+  }
+
+  .message-bubble-sent {
+    @apply bg-blue-600 text-white rounded-2xl rounded-br-md;
+    /* Add subtle shadow for depth */
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .message-bubble-received {
+    @apply bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-2xl rounded-bl-md border border-gray-200 dark:border-gray-600;
+    /* Add subtle shadow for depth */
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  }
+
+  /* Enhanced Drawer styles with better animations */
+  .mobile-drawer {
+    @apply fixed inset-0 z-50 lg:hidden;
+  }
+
+  .mobile-drawer-overlay {
+    @apply absolute inset-0 bg-black/50 backdrop-blur-sm transition-all duration-300;
+  }
+
+  .mobile-drawer-content {
+    @apply absolute left-0 top-0 h-full w-80 max-w-[85vw] bg-white dark:bg-gray-800 shadow-2xl transform transition-all duration-300 ease-out;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    /* Add subtle border for definition */
+    border-right: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .mobile-drawer-open {
+    @apply translate-x-0;
+  }
+
+  .mobile-drawer-closed {
+    @apply -translate-x-full;
+  }
+
+  /* Enhanced Chat input styles */
+  .chat-input-container {
+    @apply flex items-end gap-3 p-3 sm:p-4;
+  }
+
+  .chat-input-textarea {
+    @apply flex-1 resize-none border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white;
+    min-height: 48px;
+    max-height: 120px;
+    line-height: 1.4;
+    /* Add subtle shadow for depth */
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .chat-send-button {
+    @apply flex-shrink-0 w-10 h-10 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white rounded-full flex items-center justify-center transition-all duration-200;
+    /* Add subtle shadow for depth */
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  .chat-send-button:active {
+    @apply scale-95;
+  }
+
+  /* Enhanced Typing indicator */
+  .typing-indicator {
+    @apply flex space-x-1 p-3;
+  }
+
+  .typing-dot {
+    @apply w-2 h-2 bg-gray-400 rounded-full animate-bounce;
+  }
+
+  /* Enhanced Unread badge */
+  .unread-badge {
+    @apply inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 text-xs font-medium text-white bg-red-500 rounded-full;
+    /* Add subtle shadow for depth */
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+  }
+
+  /* Enhanced Avatar styles */
+  .avatar {
+    @apply w-10 h-10 rounded-full object-cover flex-shrink-0;
+    /* Add subtle border for definition */
+    border: 2px solid rgba(255, 255, 255, 0.8);
+  }
+
+  .avatar-online {
+    @apply relative;
+  }
+
+  .avatar-online::after {
+    @apply absolute bottom-0 right-0 w-3 h-3 bg-green-500 rounded-full ring-2 ring-white dark:ring-gray-800;
+    content: '';
+  }
+
+  /* Enhanced Skeleton loading */
+  .skeleton {
+    @apply animate-pulse bg-gray-200 dark:bg-gray-700 rounded;
+  }
+
+  /* Pull to refresh indicator */
+  .pull-refresh-indicator {
+    @apply flex items-center justify-center py-4 text-sm text-gray-500 dark:text-gray-400;
+  }
+
+  /* Message group styles */
+  .message-group {
+    @apply space-y-1 mb-4;
+  }
+
+  .message-group-sent {
+    @apply flex justify-end;
+  }
+
+  .message-group-received {
+    @apply flex justify-start;
+  }
+
+  /* Message timestamp styles */
+  .message-timestamp {
+    @apply text-xs text-gray-500 dark:text-gray-400 opacity-75;
+  }
+
+  .message-timestamp-sent {
+    @apply text-blue-100;
+  }
+
+  .message-timestamp-received {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+
+  /* Message status indicators */
+  .message-status {
+    @apply flex items-center gap-1;
+  }
+
+  .message-status-sent {
+    @apply text-blue-100;
+  }
+
+  .message-status-received {
+    @apply text-gray-500 dark:text-gray-400;
+  }
+
+  /* Enhanced touch feedback */
+  .touch-feedback {
+    @apply active:scale-95 transition-transform duration-75;
+  }
+
+  /* Keyboard-aware utilities */
+  .keyboard-aware {
+    @apply transition-all duration-300;
+  }
+
+  /* Mobile-specific spacing */
+  .mobile-padding {
+    @apply px-4 py-3;
+  }
+
+  .mobile-padding-x {
+    @apply px-4;
+  }
+
+  .mobile-padding-y {
+    @apply py-3;
   }
 }
 
@@ -99,5 +335,73 @@
       width: 280px !important;
       height: 350px !important;
     }
+  }
+
+  /* Mobile-specific utilities */
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-area-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-area-right {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Touch-friendly utilities */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Message grouping utilities */
+  .message-group {
+    @apply space-y-1;
+  }
+
+  .message-group-sent {
+    @apply flex justify-end;
+  }
+
+  .message-group-received {
+    @apply flex justify-start;
+  }
+
+  /* Keyboard-aware utilities */
+  .keyboard-aware {
+    @apply transition-all duration-300;
+  }
+
+  /* Enhanced haptic feedback simulation */
+  .haptic-feedback {
+    @apply active:scale-95 transition-transform duration-75;
+  }
+
+  /* Mobile-specific shadows */
+  .mobile-shadow {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  .mobile-shadow-lg {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Backdrop blur utilities */
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+  }
+
+  .backdrop-blur-md {
+    backdrop-filter: blur(12px);
+  }
+
+  .backdrop-blur-lg {
+    backdrop-filter: blur(16px);
   }
 }
