@@ -154,25 +154,25 @@ const MessageInput = () => {
 
   return (
     <div className="mobile-footer">
-      {/* Image Preview */}
+      {/* Enhanced Image Preview */}
       {imagePreview && (
-        <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800">
-          <div className="flex items-center gap-2">
+        <div className="p-3 sm:p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 animate-in slide-in-from-bottom-2 duration-200">
+          <div className="flex items-center gap-3">
             <div className="relative">
               <img
                 src={imagePreview}
                 alt="Preview"
-                className="w-16 h-16 object-cover rounded-lg border border-gray-300 dark:border-gray-600"
+                className="w-12 h-12 sm:w-14 sm:h-14 object-cover rounded-lg border border-gray-300 dark:border-gray-600 shadow-sm"
               />
               <button
                 onClick={removeImage}
-                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-gray-500 dark:bg-gray-600 flex items-center justify-center hover:bg-gray-600 dark:hover:bg-gray-500 transition-colors haptic-feedback touch-target"
+                className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-red-500 hover:bg-red-600 flex items-center justify-center transition-all duration-200 haptic-feedback touch-target active:scale-95 shadow-sm"
                 aria-label="Remove image"
               >
-                <span className="text-white text-xs">×</span>
+                <span className="text-white text-xs font-bold">×</span>
               </button>
             </div>
-            <span className="text-sm text-gray-600 dark:text-gray-400">Image ready to send</span>
+            <span className="text-sm font-medium text-gray-600 dark:text-gray-400">Image ready to send</span>
           </div>
         </div>
       )}
@@ -187,14 +187,14 @@ const MessageInput = () => {
           onChange={handleImageChange}
         />
 
-        {/* Attachment Button */}
+        {/* Enhanced Attachment Button */}
         <button
           type="button"
-          className="p-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target flex-shrink-0"
+          className="p-2 sm:p-2.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target flex-shrink-0 active:scale-95"
           onClick={() => fileInputRef.current?.click()}
           aria-label="Attach image"
         >
-          <Paperclip className="w-5 h-5 text-gray-600 dark:text-gray-400" />
+          <Paperclip className="w-4 h-4 sm:w-5 sm:h-5 text-gray-600 dark:text-gray-400" />
         </button>
 
         {/* Text Input Container */}
@@ -210,26 +210,26 @@ const MessageInput = () => {
             disabled={isSending}
           />
           
-          {/* Emoji Button */}
+          {/* Enhanced Emoji Button */}
           <button
             type="button"
-            className="absolute right-3 bottom-3 p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target flex-shrink-0"
+            className="absolute right-2 sm:right-3 bottom-2 sm:bottom-3 p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-all duration-200 haptic-feedback touch-target flex-shrink-0 active:scale-95"
             aria-label="Add emoji"
             onClick={toggleEmojiPicker}
           >
             <Smile className="w-4 h-4 text-gray-600 dark:text-gray-400" />
           </button>
 
-          {/* Emoji Picker */}
+          {/* Enhanced Responsive Emoji Picker */}
           {showEmojiPicker && (
             <div 
               ref={emojiPickerRef}
-              className="absolute bottom-full right-0 mb-2 z-50 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg mobile-shadow-lg"
+              className="absolute bottom-full right-0 mb-2 z-50 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-lg animate-in slide-in-from-bottom-2 duration-200"
             >
               <EmojiPicker
                 onEmojiClick={handleEmojiClick}
-                width={280}
-                height={350}
+                width={window.innerWidth < 640 ? Math.min(280, window.innerWidth - 32) : 320}
+                height={window.innerWidth < 640 ? 300 : 350}
                 searchDisabled={false}
                 skinTonesDisabled={true}
                 lazyLoadEmojis={true}
@@ -240,11 +240,11 @@ const MessageInput = () => {
           )}
         </div>
 
-        {/* Send/Voice Button */}
+        {/* Enhanced Send/Voice Button */}
         {text.trim() || selectedFile ? (
           <button
             type="submit"
-            className={`chat-send-button ${isSending ? 'opacity-50' : ''}`}
+            className={`chat-send-button active:scale-95 ${isSending ? 'opacity-50' : ''}`}
             disabled={(!text.trim() && !selectedFile) || isSending}
             aria-label="Send message"
           >
@@ -257,7 +257,7 @@ const MessageInput = () => {
         ) : (
           <button
             type="button"
-            className="flex-shrink-0 w-10 h-10 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-400 rounded-full flex items-center justify-center transition-all duration-200 haptic-feedback touch-target"
+            className="flex-shrink-0 w-10 h-10 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 text-gray-600 dark:text-gray-400 rounded-full flex items-center justify-center transition-all duration-200 haptic-feedback touch-target active:scale-95"
             onClick={handleVoiceRecord}
             aria-label="Voice message"
           >

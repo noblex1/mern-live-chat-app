@@ -141,43 +141,73 @@
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   }
 
-  /* Enhanced Drawer styles with better animations */
+  /* Enhanced Drawer styles with better animations and responsiveness */
   .mobile-drawer {
     @apply fixed inset-0 z-50 lg:hidden;
   }
 
   .mobile-drawer-overlay {
-    @apply absolute inset-0 bg-black/50 backdrop-blur-sm transition-all duration-300;
+    @apply absolute inset-0 bg-black/50 backdrop-blur-sm transition-all duration-300 ease-in-out;
+    animation: fadeIn 0.3s ease-in-out;
   }
 
   .mobile-drawer-content {
-    @apply absolute left-0 top-0 h-full w-80 max-w-[85vw] bg-white dark:bg-gray-800 shadow-2xl transform transition-all duration-300 ease-out;
+    @apply absolute left-0 top-0 h-full bg-white dark:bg-gray-800 shadow-2xl transform transition-all duration-300 ease-out;
+    width: min(320px, 85vw); /* Responsive width */
     padding-top: env(safe-area-inset-top);
     padding-bottom: env(safe-area-inset-bottom);
-    /* Add subtle border for definition */
     border-right: 1px solid rgba(0, 0, 0, 0.1);
+    /* Enhanced shadow for better depth */
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(0, 0, 0, 0.05);
   }
 
   .mobile-drawer-open {
     @apply translate-x-0;
+    animation: slideInLeft 0.3s ease-out;
   }
 
   .mobile-drawer-closed {
     @apply -translate-x-full;
+    animation: slideOutLeft 0.3s ease-in;
   }
 
-  /* Enhanced Chat input styles */
+  /* Drawer animations */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideInLeft {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+  }
+
+  @keyframes slideOutLeft {
+    from { transform: translateX(0); }
+    to { transform: translateX(-100%); }
+  }
+
+  /* Enhanced Chat input styles with better responsiveness */
   .chat-input-container {
-    @apply flex items-end gap-3 p-3 sm:p-4;
+    @apply flex items-end gap-2 p-3 sm:gap-3 sm:p-4;
+    /* Responsive padding */
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
   }
 
   .chat-input-textarea {
-    @apply flex-1 resize-none border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white;
-    min-height: 48px;
+    @apply flex-1 resize-none border border-gray-300 dark:border-gray-600 rounded-2xl px-3 py-2 sm:px-4 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white transition-all duration-200;
+    min-height: 44px; /* Better touch target */
     max-height: 120px;
     line-height: 1.4;
-    /* Add subtle shadow for depth */
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  }
+
+  /* Responsive input sizing */
+  @media (max-width: 640px) {
+    .chat-input-textarea {
+      font-size: 16px; /* Prevents zoom on iOS */
+      min-height: 44px;
+    }
   }
 
   .chat-send-button {
@@ -271,12 +301,28 @@
     @apply text-gray-500 dark:text-gray-400;
   }
 
-  /* Enhanced touch feedback */
+  /* Enhanced touch feedback and haptic response */
   .touch-feedback {
     @apply active:scale-95 transition-transform duration-75;
   }
 
-  /* Mobile-specific improvements */
+  .haptic-feedback {
+    @apply active:scale-95 transition-all duration-150;
+  }
+
+  /* Enhanced focus states for accessibility */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800;
+  }
+
+  /* Smooth scroll behavior */
+  .smooth-scroll {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Enhanced responsive breakpoints */
+  /* Mobile (320px - 640px) */
   @media (max-width: 640px) {
     /* Improve touch targets */
     .touch-target {
@@ -294,6 +340,7 @@
     /* Improve scrolling performance */
     .overflow-y-auto {
       -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
     
     /* Better focus states for mobile */
@@ -305,6 +352,62 @@
     input:focus, textarea:focus {
       font-size: 16px; /* Prevents zoom on iOS */
     }
+
+    /* Mobile-specific spacing adjustments */
+    .mobile-spacing {
+      @apply px-3 py-2;
+    }
+
+    /* Compact message bubbles on small screens */
+    .message-bubble {
+      @apply max-w-[280px];
+    }
+
+    /* Mobile-specific text sizing */
+    .mobile-text {
+      font-size: 16px; /* Prevents zoom on iOS */
+    }
+
+    /* Enhanced mobile touch targets */
+    .mobile-touch-target {
+      min-height: 48px;
+      min-width: 48px;
+    }
+  }
+
+  /* Tablet (641px - 1024px) */
+  @media (min-width: 641px) and (max-width: 1024px) {
+    .message-bubble {
+      @apply max-w-md;
+    }
+    
+    .mobile-drawer-content {
+      width: min(380px, 50vw);
+    }
+  }
+
+  /* Desktop (1025px+) */
+  @media (min-width: 1025px) {
+    .message-bubble {
+      @apply max-w-lg;
+    }
+  }
+
+  /* Enhanced responsive typography */
+  .responsive-text-xs {
+    @apply text-xs sm:text-sm;
+  }
+
+  .responsive-text-sm {
+    @apply text-sm sm:text-base;
+  }
+
+  .responsive-text-base {
+    @apply text-sm sm:text-base lg:text-lg;
+  }
+
+  .responsive-text-lg {
+    @apply text-base sm:text-lg lg:text-xl;
   }
 
   /* Keyboard-aware utilities */
@@ -312,17 +415,30 @@
     @apply transition-all duration-300;
   }
 
-  /* Mobile-specific spacing */
+  /* Enhanced mobile-specific spacing */
   .mobile-padding {
-    @apply px-4 py-3;
+    @apply px-3 py-2 sm:px-4 sm:py-3;
   }
 
   .mobile-padding-x {
-    @apply px-4;
+    @apply px-3 sm:px-4;
   }
 
   .mobile-padding-y {
-    @apply py-3;
+    @apply py-2 sm:py-3;
+  }
+
+  /* Responsive spacing utilities */
+  .responsive-gap {
+    @apply gap-2 sm:gap-3 lg:gap-4;
+  }
+
+  .responsive-padding {
+    @apply p-3 sm:p-4 lg:p-6;
+  }
+
+  .responsive-margin {
+    @apply m-2 sm:m-3 lg:m-4;
   }
 }
 
