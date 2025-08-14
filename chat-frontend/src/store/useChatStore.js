@@ -38,6 +38,8 @@ export const useChatStore = create((set, get) => ({
   typingUsers: {},
   profileDetails: null,
   isProfileLoading: false,
+  sidebarOpen: false,
+  searchTerm: '',
 
   // Actions
   getUsers: async () => {
@@ -277,6 +279,10 @@ export const useChatStore = create((set, get) => ({
   },
 
   setSelectedUser: (selectedUser) => set({ selectedUser }),
+  
+  // Sidebar and search state management
+  setSidebarOpen: (sidebarOpen) => set({ sidebarOpen }),
+  setSearchTerm: (searchTerm) => set({ searchTerm }),
 
   // Socket.IO methods
   subscribeToMessages: () => {

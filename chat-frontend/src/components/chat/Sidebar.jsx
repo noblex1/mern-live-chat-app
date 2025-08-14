@@ -13,12 +13,14 @@ const Sidebar = () => {
     setSelectedUser, 
     isUsersLoading, 
     isSearching,
-    onlineUsers
+    onlineUsers,
+    sidebarOpen,
+    setSidebarOpen,
+    searchTerm,
+    setSearchTerm
   } = useChatStore();
   
   const [showOnlineOnly, setShowOnlineOnly] = useState(false);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [searchHistory, setSearchHistory] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
   const [sortBy, setSortBy] = useState('recent'); // recent, name, online
@@ -402,18 +404,7 @@ const Sidebar = () => {
         </div>
       </aside>
 
-      {/* Mobile Menu Button - Only show when no user is selected */}
-      {!selectedUser && (
-        <div className="lg:hidden fixed top-4 left-4 z-40">
-          <button
-            className="bg-blue-600 text-white p-3 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-400 haptic-feedback touch-target mobile-shadow-lg"
-            onClick={() => setSidebarOpen(true)}
-            aria-label="Open chats"
-          >
-            <Users className="w-5 h-5" />
-          </button>
-        </div>
-      )}
+      {/* Mobile Menu Button - Removed in favor of bottom navigation */}
     </>
   );
 };

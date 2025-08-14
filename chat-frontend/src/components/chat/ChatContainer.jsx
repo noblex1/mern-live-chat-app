@@ -122,7 +122,7 @@ const ChatContainer = () => {
       )}
 
       {/* Mobile Message List */}
-      <div className="lg:hidden">
+      <div className="lg:hidden flex-1 overflow-y-auto min-h-0 pb-20">
         <MobileMessageList
           messages={messages}
           onMessageUpdate={handleMessageUpdate}

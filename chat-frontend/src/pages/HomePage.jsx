@@ -2,6 +2,7 @@ import { useChatStore } from '../store/useChatStore';
 import Sidebar from '../components/chat/Sidebar';
 import NoChatSelected from '../components/chat/NoChatSelected';
 import ChatContainer from '../components/chat/ChatContainer';
+import MobileNavigation from '../components/chat/MobileNavigation';
 
 const HomePage = () => {
   const { selectedUser } = useChatStore();
@@ -21,6 +22,9 @@ const HomePage = () => {
         
         {/* Mobile Sidebar - Always render for drawer functionality */}
         <Sidebar />
+        
+        {/* Mobile Navigation */}
+        <MobileNavigation />
       </div>
 
       {/* Desktop Layout - Unchanged */}

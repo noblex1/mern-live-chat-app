@@ -1,8 +1,31 @@
 import { MessageCircle, Search, Users, Sparkles } from 'lucide-react';
+import { useChatStore } from '../../store/useChatStore';
 
 const NoChatSelected = () => {
+  const { setSidebarOpen, setSearchTerm } = useChatStore();
+
+  const handleSearchUsers = () => {
+    // Open sidebar and focus on search
+    setSidebarOpen(true);
+    // Small delay to ensure sidebar is open before focusing search
+    setTimeout(() => {
+      setSearchTerm('');
+      // Focus on search input after sidebar opens
+      const searchInput = document.querySelector('input[placeholder*="Search"]');
+      if (searchInput) {
+        searchInput.focus();
+      }
+    }, 100);
+  };
+
+  const handleRecentChats = () => {
+    // Open sidebar and show recent chats
+    setSidebarOpen(true);
+    setSearchTerm('');
+  };
+
   return (
-    <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+    <div className="flex flex-col items-center justify-center h-full p-6 pb-24 text-center">
       {/* Mobile Layout - Enhanced */}
       <div className="lg:hidden w-full max-w-sm">
         <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-lg border border-gray-200 dark:border-gray-700 mobile-shadow-lg">
@@ -19,7 +42,10 @@ const NoChatSelected = () => {
           </p>
           
           <div className="space-y-3">
-            <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 rounded-xl border border-green-100 dark:border-green-800/20 hover:shadow-sm transition-all duration-200 haptic-feedback">
+            <button
+              onClick={handleSearchUsers}
+              className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 rounded-xl border border-green-100 dark:border-green-800/20 hover:shadow-sm transition-all duration-200 haptic-feedback touch-target active:scale-95"
+            >
               <div className="w-10 h-10 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
                 <Search className="w-5 h-5 text-green-600 dark:text-green-400" />
               </div>
@@ -28,9 +54,12 @@ const NoChatSelected = () => {
                 <p className="text-xs text-gray-500 dark:text-gray-400">Find people to chat with</p>
               </div>
               <Sparkles className="w-4 h-4 text-green-500 opacity-60" />
-            </div>
+            </button>
             
-            <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/10 dark:to-indigo-900/10 rounded-xl border border-purple-100 dark:border-purple-800/20 hover:shadow-sm transition-all duration-200 haptic-feedback">
+            <button
+              onClick={handleRecentChats}
+              className="w-full flex items-center gap-3 p-4 bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/10 dark:to-indigo-900/10 rounded-xl border border-purple-100 dark:border-purple-800/20 hover:shadow-sm transition-all duration-200 haptic-feedback touch-target active:scale-95"
+            >
               <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center">
                 <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
               </div>
@@ -39,7 +68,7 @@ const NoChatSelected = () => {
                 <p className="text-xs text-gray-500 dark:text-gray-400">Continue conversations</p>
               </div>
               <Sparkles className="w-4 h-4 text-purple-500 opacity-60" />
-            </div>
+            </button>
           </div>
           
           <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
