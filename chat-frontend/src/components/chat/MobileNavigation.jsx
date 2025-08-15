@@ -2,26 +2,59 @@ import { Users, MessageCircle, Search, Menu } from 'lucide-react';
 import { useChatStore } from '../../store/useChatStore';
 
 const MobileNavigation = () => {
-  const { selectedUser, setSidebarOpen, setSearchTerm } = useChatStore();
+  const { selectedUser, setSidebarOpen, setSearchTerm, getConversations } = useChatStore();
 
   const handleOpenSidebar = () => {
-    setSidebarOpen(true);
+    try {
+      setSidebarOpen(true);
+    } catch (error) {
+      console.error('Error opening sidebar:', error);
+    }
   };
 
   const handleSearchUsers = () => {
-    setSidebarOpen(true);
-    setTimeout(() => {
-      setSearchTerm('');
-      const searchInput = document.querySelector('input[placeholder*="Search"]');
-      if (searchInput) {
-        searchInput.focus();
-      }
-    }, 100);
+    try {
+      setSidebarOpen(true);
+      
+      setTimeout(() => {
+        setSearchTerm('');
+        
+        // Try multiple selectors for better reliability
+        const searchInput = document.getElementById('sidebar-search-input') || 
+                           document.querySelector('input[data-testid="sidebar-search-input"]') ||
+                           document.querySelector('input[placeholder*="Search"]');
+        
+        if (searchInput) {
+          searchInput.focus();
+        } else {
+          // Retry after a longer delay
+          setTimeout(() => {
+            const retrySearchInput = document.getElementById('sidebar-search-input') || 
+                                   document.querySelector('input[data-testid="sidebar-search-input"]') ||
+                                   document.querySelector('input[placeholder*="Search"]');
+            if (retrySearchInput) {
+              retrySearchInput.focus();
+            }
+          }, 300);
+        }
+      }, 200);
+    } catch (error) {
+      console.error('Error in handleSearchUsers:', error);
+    }
   };
 
   const handleRecentChats = () => {
-    setSidebarOpen(true);
-    setSearchTerm('');
+    try {
+      setSidebarOpen(true);
+      setSearchTerm('');
+      
+      // Load conversations to ensure they're available
+      setTimeout(() => {
+        getConversations();
+      }, 100);
+    } catch (error) {
+      console.error('Error in handleRecentChats:', error);
+    }
   };
 
   return (
@@ -69,7 +102,7 @@ const MobileNavigation = () => {
       </div>
       
       {/* Enhanced visual separator */}
-      <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-12 h-1 bg-gray-300 dark:bg-gray-600 rounded-full -mt-2 opacity-60" />
+      <div className="nav-indicator" />
     </div>
   );
 };

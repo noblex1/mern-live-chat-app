@@ -1,12 +1,14 @@
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useChatStore } from '../../store/useChatStore';
 import { Settings, User, LogOut } from 'lucide-react';
 
 const Navbar = () => {
   const { logout, authUser } = useAuthStore();
+  const { sidebarOpen } = useChatStore();
 
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 fixed w-full top-0 z-[100] transition-colors duration-300">
+    <header className={`bg-white dark:bg-gray-800 shadow-sm border-b border-gray-200 dark:border-gray-700 fixed w-full top-0 z-40 transition-colors duration-300 ${sidebarOpen ? 'lg:block hidden' : ''}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}

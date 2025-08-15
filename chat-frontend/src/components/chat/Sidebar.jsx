@@ -112,7 +112,7 @@ const Sidebar = () => {
         
         {/* Enhanced Drawer Content */}
         <div className={`mobile-drawer-content ${sidebarOpen ? 'mobile-drawer-open' : 'mobile-drawer-closed'}`}>
-          {/* Enhanced Header */}
+          {/* Enhanced Header with better responsive design */}
           <div className="border-b border-gray-200 dark:border-gray-700 p-4 flex-shrink-0">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
@@ -148,11 +148,14 @@ const Sidebar = () => {
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onFocus={() => setShowSearchSuggestions(true)}
                   aria-label="Search"
+                  id="sidebar-search-input"
+                  data-testid="sidebar-search-input"
                 />
                 {searchTerm && (
                   <button
                     onClick={() => setSearchTerm('')}
-                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center touch-target"
+                    aria-label="Clear search"
                   >
                     <X className="h-4 w-4 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300" />
                   </button>
@@ -161,7 +164,7 @@ const Sidebar = () => {
 
               {/* Enhanced Search Suggestions */}
               {showSearchSuggestions && searchHistory.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 max-h-60 overflow-y-auto">
+                <div className="search-suggestions">
                   <div className="p-3">
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wide">Recent Searches</span>
@@ -178,7 +181,7 @@ const Sidebar = () => {
                         <button
                           key={index}
                           onClick={() => handleSearchSuggestionClick(suggestion)}
-                          className="w-full text-left px-3 py-2.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors flex items-center gap-2 touch-target"
+                          className="search-suggestion-item"
                         >
                           <Clock className="w-3 h-3 text-gray-400 flex-shrink-0" />
                           <span className="truncate">{suggestion}</span>
@@ -218,7 +221,7 @@ const Sidebar = () => {
 
             {/* Enhanced Filters */}
             {showFilters && (
-              <div className="mt-3 space-y-2 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div className="filter-controls">
                 {/* Online Filter */}
                 <div className="flex items-center justify-between">
                   <label className="cursor-pointer flex items-center gap-2">
@@ -251,7 +254,7 @@ const Sidebar = () => {
           </div>
 
           {/* Enhanced Users List */}
-          <div className="flex-1 overflow-y-auto min-h-0">
+          <div className="sidebar-scrollable">
             <div className="py-2">
               {isSearching && (
                 <div className="text-center text-gray-500 dark:text-gray-400 py-8">
@@ -392,7 +395,7 @@ const Sidebar = () => {
         </div>
 
         {/* Enhanced Users List for Desktop */}
-        <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="sidebar-scrollable">
           <div className="py-3">
             {isSearching && (
               <div className="text-center text-gray-500 dark:text-gray-400 py-4">
