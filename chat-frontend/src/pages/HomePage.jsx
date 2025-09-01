@@ -8,33 +8,34 @@ const HomePage = () => {
   const { selectedUser } = useChatStore();
 
   return (
-    <div className="mobile-container">
-      {/* Enhanced Mobile Layout */}
-      <div className="chat-layout-mobile">
-        {selectedUser ? (
-          <ChatContainer />
-        ) : (
-          <div className="flex-1 flex flex-col">
-            {/* Mobile: Show NoChatSelected when no user is selected */}
+    <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900 pt-16">
+      {/* Mobile Layout */}
+      <div className="lg:hidden flex-1 flex flex-col overflow-hidden pb-20">
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col min-h-0">
+          {selectedUser ? (
+            <ChatContainer />
+          ) : (
             <NoChatSelected />
-          </div>
-        )}
+          )}
+        </div>
         
-        {/* Mobile Sidebar - Always render for drawer functionality */}
+        {/* Mobile Sidebar - Drawer */}
         <Sidebar />
         
-        {/* Enhanced Mobile Navigation */}
+        {/* Mobile Bottom Navigation */}
         <MobileNavigation />
       </div>
 
-      {/* Enhanced Desktop Layout */}
-      <div className="chat-layout-desktop">
-        <div className="bg-white dark:bg-gray-800 h-full transition-colors duration-300">
-          <div className="chat-layout">
-            <Sidebar />
-            <div className="chat-main-content">
-              {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
-            </div>
+      {/* Desktop Layout */}
+      <div className="hidden lg:flex flex-1 overflow-hidden">
+        <div className="flex w-full h-full bg-white dark:bg-gray-800 transition-colors duration-300">
+          {/* Desktop Sidebar */}
+          <Sidebar />
+          
+          {/* Main Chat Area */}
+          <div className="flex-1 flex flex-col min-w-0">
+            {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
           </div>
         </div>
       </div>

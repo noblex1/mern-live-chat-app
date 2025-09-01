@@ -93,15 +93,15 @@ const ChatContainer = () => {
   }
 
   return (
-    <div className="chat-section">
+    <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
       <ChatHeader />
       
-      {/* Enhanced Pinned Messages Banner */}
+      {/* Pinned Messages Banner */}
       {pinnedMessagesCount > 0 && (
         <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800 px-4 py-3">
           <button
             onClick={() => setShowPinnedMessages(true)}
-            className="flex items-center gap-2 text-sm font-medium text-yellow-800 dark:text-yellow-200 hover:text-yellow-900 dark:hover:text-yellow-100 transition-colors w-full justify-center haptic-feedback touch-target"
+            className="flex items-center gap-2 text-sm font-medium text-yellow-800 dark:text-yellow-200 hover:text-yellow-900 dark:hover:text-yellow-100 transition-colors w-full justify-center active:scale-95 min-h-[44px]"
           >
             <BsPinAngleFill className="w-4 h-4" />
             <span>{pinnedMessagesCount} pinned message{pinnedMessagesCount !== 1 ? 's' : ''}</span>
@@ -110,7 +110,7 @@ const ChatContainer = () => {
         </div>
       )}
 
-      {/* Enhanced Pinned Messages Modal */}
+      {/* Pinned Messages Modal */}
       {showPinnedMessages && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
           <PinnedMessages
@@ -121,9 +121,10 @@ const ChatContainer = () => {
         </div>
       )}
 
-      {/* Enhanced Responsive Message List */}
-      <div className="chat-messages-container">
-        <div className="message-list-mobile">
+      {/* Message List */}
+      <div className="flex-1 overflow-y-auto min-h-0 pb-4 lg:pb-0" style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}>
+        {/* Mobile Message List */}
+        <div className="lg:hidden">
           <MobileMessageList
             messages={messages}
             onMessageUpdate={handleMessageUpdate}
@@ -133,7 +134,9 @@ const ChatContainer = () => {
             selectedUser={selectedUser}
           />
         </div>
-        <div className="message-list-desktop">
+        
+        {/* Desktop Message List */}
+        <div className="hidden lg:block">
           <DesktopMessageList
             messages={messages}
             onMessageUpdate={handleMessageUpdate}
