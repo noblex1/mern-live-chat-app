@@ -223,7 +223,7 @@ const SidebarContent = ({
   filteredUsers
 }) => {
   return (
-    <>
+    <div className="flex flex-col h-full">
       {/* Enhanced Header */}
       <div className="border-b border-gray-200 dark:border-gray-800 p-4 flex-shrink-0 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-gray-800 dark:to-gray-900">
         <div className="flex items-center justify-between mb-4">
@@ -393,7 +393,7 @@ const SidebarContent = ({
       </div>
 
       {/* Enhanced Users List */}
-      <div className="flex-1 overflow-y-auto min-h-0" style={{ scrollbarWidth: 'thin', WebkitOverflowScrolling: 'touch' }}>
+      <div className="flex-1 overflow-y-auto min-h-0 sidebar-scrollable custom-scrollbar">
         <div className="py-2">
           {isSearching && (
             <div className="text-center text-gray-500 dark:text-gray-400 py-12">
@@ -426,7 +426,7 @@ const SidebarContent = ({
           )}
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
