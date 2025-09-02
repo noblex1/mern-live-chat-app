@@ -26,6 +26,8 @@ const ChatContainer = () => {
 
   const [showPinnedMessages, setShowPinnedMessages] = useState(false);
   const [pinnedMessagesCount, setPinnedMessagesCount] = useState(0);
+  const [showMessageOptions, setShowMessageOptions] = useState(null);
+  const [selectedMessage, setSelectedMessage] = useState(null);
 
   const fetchPinnedMessagesCount = useCallback(async () => {
     try {
@@ -80,11 +82,16 @@ const ChatContainer = () => {
     }
   };
 
+  const handleMessageReaction = async (messageId, reaction) => {
+    // TODO: Implement message reactions
+    console.log('Reacting to message:', messageId, 'with:', reaction);
+  };
+
   if (isMessagesLoading) {
     return (
-      <div className="chat-section">
+      <div className="flex-1 flex flex-col min-h-0 overflow-hidden bg-white dark:bg-gray-800 chat-container">
         <ChatHeader />
-        <div className="chat-messages-container">
+        <div className="flex-1 overflow-y-auto min-h-0 message-list message-list-with-padding">
           <MessageSkeleton />
         </div>
         <MessageInput />
@@ -93,15 +100,15 @@ const ChatContainer = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+    <div className="flex-1 flex flex-col min-h-0 overflow-hidden bg-white dark:bg-gray-800 chat-container">
       <ChatHeader />
       
       {/* Pinned Messages Banner */}
       {pinnedMessagesCount > 0 && (
-        <div className="bg-yellow-50 dark:bg-yellow-900/20 border-b border-yellow-200 dark:border-yellow-800 px-4 py-3">
+        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-900/20 dark:to-orange-900/20 border-b border-yellow-200 dark:border-yellow-800 px-4 py-3">
           <button
             onClick={() => setShowPinnedMessages(true)}
-            className="flex items-center gap-2 text-sm font-medium text-yellow-800 dark:text-yellow-200 hover:text-yellow-900 dark:hover:text-yellow-100 transition-colors w-full justify-center active:scale-95 min-h-[44px]"
+            className="flex items-center gap-2 text-sm font-medium text-yellow-800 dark:text-yellow-200 hover:text-yellow-900 dark:hover:text-yellow-100 transition-all duration-200 w-full justify-center active:scale-95 min-h-[44px] rounded-xl hover:bg-yellow-100 dark:hover:bg-yellow-900/30"
           >
             <BsPinAngleFill className="w-4 h-4" />
             <span>{pinnedMessagesCount} pinned message{pinnedMessagesCount !== 1 ? 's' : ''}</span>
@@ -112,7 +119,7 @@ const ChatContainer = () => {
 
       {/* Pinned Messages Modal */}
       {showPinnedMessages && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
           <PinnedMessages
             selectedUser={selectedUser}
             onClose={() => setShowPinnedMessages(false)}
@@ -122,7 +129,7 @@ const ChatContainer = () => {
       )}
 
       {/* Message List */}
-      <div className="flex-1 overflow-y-auto min-h-0 pb-4 lg:pb-0" style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}>
+      <div className="flex-1 overflow-y-auto min-h-0 message-list message-list-with-padding" style={{ scrollBehavior: 'smooth', WebkitOverflowScrolling: 'touch' }}>
         {/* Mobile Message List */}
         <div className="lg:hidden">
           <MobileMessageList
@@ -130,8 +137,13 @@ const ChatContainer = () => {
             onMessageUpdate={handleMessageUpdate}
             onMessageDelete={handleMessageDelete}
             onMessagePin={handleMessagePin}
+            onMessageReaction={handleMessageReaction}
             typingUsers={typingUsers}
             selectedUser={selectedUser}
+            showMessageOptions={showMessageOptions}
+            setShowMessageOptions={setShowMessageOptions}
+            selectedMessage={selectedMessage}
+            setSelectedMessage={setSelectedMessage}
           />
         </div>
         
@@ -142,12 +154,18 @@ const ChatContainer = () => {
             onMessageUpdate={handleMessageUpdate}
             onMessageDelete={handleMessageDelete}
             onMessagePin={handleMessagePin}
+            onMessageReaction={handleMessageReaction}
             typingUsers={typingUsers}
             selectedUser={selectedUser}
+            showMessageOptions={showMessageOptions}
+            setShowMessageOptions={setShowMessageOptions}
+            selectedMessage={selectedMessage}
+            setSelectedMessage={setSelectedMessage}
           />
         </div>
       </div>
       
+      {/* Message Input - Show for both mobile and desktop */}
       <MessageInput />
     </div>
   );
@@ -159,8 +177,13 @@ const DesktopMessageList = ({
   onMessageUpdate, 
   onMessageDelete, 
   onMessagePin, 
+  onMessageReaction,
   typingUsers, 
-  selectedUser 
+  selectedUser,
+  showMessageOptions,
+  setShowMessageOptions,
+  selectedMessage,
+  setSelectedMessage
 }) => {
   const messageEndRef = useRef(null);
 
@@ -220,9 +243,9 @@ const DesktopMessageList = ({
   const messageGroups = groupMessages(messages);
 
   return (
-    <div className="chat-messages-content">
+    <div className="p-4 space-y-2 pb-20">
       {messageGroups.map((group, groupIndex) => (
-        <div key={`group-${groupIndex}`} className="space-y-1">
+        <div key={`group-${groupIndex}`} className="message-group">
           {group.map((message) => (
             <Message
               key={message._id}
@@ -230,8 +253,13 @@ const DesktopMessageList = ({
               onMessageUpdate={onMessageUpdate}
               onMessageDelete={onMessageDelete}
               onMessagePin={onMessagePin}
+              onMessageReaction={onMessageReaction}
               isFirstInGroup={message.isFirstInGroup}
               isLastInGroup={message.isLastInGroup}
+              showMessageOptions={showMessageOptions}
+              setShowMessageOptions={setShowMessageOptions}
+              selectedMessage={selectedMessage}
+              setSelectedMessage={setSelectedMessage}
             />
           ))}
         </div>
@@ -239,9 +267,9 @@ const DesktopMessageList = ({
       
       {/* Enhanced Typing Indicator */}
       {typingUsers[selectedUser?._id] && (
-        <div className="flex justify-start animate-in slide-in-from-bottom-2 duration-300">
-          <div className="flex gap-2 sm:gap-3 max-w-[85%]">
-            <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-white dark:border-gray-700 shadow-sm overflow-hidden flex-shrink-0">
+        <div className="flex justify-start animate-in slide-in-from-bottom-2 duration-300 mb-4">
+          <div className="flex gap-2 max-w-[75%]">
+            <div className="w-8 h-8 rounded-full border-2 border-white dark:border-gray-700 shadow-sm overflow-hidden flex-shrink-0 mt-1">
               <img
                 src={selectedUser?.avatar || '/avatar.png'}
                 alt="avatar"
@@ -252,7 +280,7 @@ const DesktopMessageList = ({
               <div className="text-xs text-gray-500 dark:text-gray-400 mb-1 font-medium">
                 {typingUsers[selectedUser._id]}
               </div>
-              <div className="message-bubble-received px-3 py-2 sm:px-4 sm:py-2.5 text-sm shadow-sm">
+              <div className="message-bubble-received px-3 py-2 text-sm shadow-sm">
                 <div className="typing-indicator">
                   <div className="typing-dot"></div>
                   <div className="typing-dot" style={{ animationDelay: '0.1s' }}></div>
@@ -272,19 +300,19 @@ const DesktopMessageList = ({
 // Enhanced Message Skeleton Component
 const MessageSkeleton = () => {
   return (
-    <div className="chat-messages-content">
+    <div className="p-4 space-y-2 pb-32">
       {[...Array(6)].map((_, i) => {
         const isSent = i % 2 === 1;
         return (
           <div key={i} className={`flex ${isSent ? 'justify-end' : 'justify-start'}`}>
             <div
-              className={`flex gap-2 sm:gap-3 max-w-[85%] sm:max-w-[75%] ${isSent ? 'flex-row-reverse' : 'flex-row'}`}
+              className={`flex gap-2 max-w-[75%] ${isSent ? 'flex-row-reverse' : 'flex-row'}`}
             >
-              <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gray-300 dark:bg-gray-700 rounded-full animate-pulse flex-shrink-0" />
-              <div className="flex flex-col space-y-2">
-                <div className={`w-12 h-3 bg-gray-300 dark:bg-gray-700 rounded animate-pulse ${isSent ? 'ml-auto' : ''}`} />
+              <div className="w-8 h-8 bg-gray-300 dark:bg-gray-700 rounded-full animate-pulse flex-shrink-0 mt-1" />
+              <div className="flex flex-col space-y-1">
+                <div className={`w-12 h-2 bg-gray-300 dark:bg-gray-700 rounded animate-pulse ${isSent ? 'ml-auto' : ''}`} />
                 <div
-                  className={`w-32 sm:w-40 h-8 sm:h-10 rounded-2xl animate-pulse ${
+                  className={`w-32 h-8 rounded-2xl animate-pulse ${
                     isSent ? 'bg-blue-200 dark:bg-blue-700' : 'bg-gray-300 dark:bg-gray-700'
                   }`}
                 />

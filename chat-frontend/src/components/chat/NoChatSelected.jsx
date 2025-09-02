@@ -1,4 +1,4 @@
-import { MessageCircle, Search, Users, Sparkles } from 'lucide-react';
+import { MessageCircle, Search, Users, Sparkles, ArrowRight, Phone, Video, Shield } from 'lucide-react';
 import { useChatStore } from '../../store/useChatStore';
 import { useEffect } from 'react';
 
@@ -59,91 +59,132 @@ const NoChatSelected = () => {
   }, [getConversations]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-full text-center">
+    <div className="flex flex-col items-center justify-center h-full text-center bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
       {/* Mobile Layout - Enhanced to match the image */}
-      <div className="welcome-screen-mobile">
-        <div className="welcome-card-mobile">
+      <div className="lg:hidden w-full px-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 shadow-xl border border-gray-200 dark:border-gray-700">
           {/* Enhanced Icon Container */}
-          <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/20 dark:to-blue-800/20 rounded-full flex items-center justify-center mx-auto mb-6 shadow-sm">
-            <MessageCircle className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+          <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
+            <MessageCircle className="w-12 h-12 text-white" />
           </div>
           
           {/* Enhanced Title */}
-          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-3">
             Welcome to MeebaChat
           </h2>
           
           {/* Enhanced Description */}
-          <p className="text-gray-600 dark:text-gray-400 mb-6 text-sm leading-relaxed">
-            Start a conversation by searching for users or browse your recent chats
+          <p className="text-gray-600 dark:text-gray-400 mb-8 text-base leading-relaxed">
+            Connect with friends and family with secure, real-time messaging
           </p>
           
           {/* Enhanced Action Buttons */}
-          <div className="space-y-3">
+          <div className="space-y-4">
             <button
               onClick={handleSearchUsers}
-              className="action-button-mobile bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/10 dark:to-emerald-900/10 border-green-100 dark:border-green-800/20 hover:shadow-sm"
+              className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white rounded-xl p-4 flex items-center gap-4 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
               aria-label="Search for users to chat with"
             >
-              <div className="w-10 h-10 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center">
-                <Search className="w-5 h-5 text-green-600 dark:text-green-400" />
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                <Search className="w-6 h-6 text-white" />
               </div>
               <div className="text-left flex-1">
-                <p className="text-sm font-medium text-gray-900 dark:text-white">Search Users</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Find people to chat with</p>
+                <p className="text-base font-semibold">Search Users</p>
+                <p className="text-sm opacity-90">Find people to chat with</p>
               </div>
-              <Sparkles className="w-4 h-4 text-green-500 opacity-60" />
+              <ArrowRight className="w-5 h-5" />
             </button>
             
             <button
               onClick={handleRecentChats}
-              className="action-button-mobile bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-900/10 dark:to-indigo-900/10 border-purple-100 dark:border-purple-800/20 hover:shadow-sm"
+              className="w-full bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white rounded-xl p-4 flex items-center gap-4 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
               aria-label="View recent conversations"
             >
-              <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center">
-                <Users className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
+                <Users className="w-6 h-6 text-white" />
               </div>
               <div className="text-left flex-1">
-                <p className="text-sm font-medium text-gray-900 dark:text-white">Recent Chats</p>
-                <p className="text-xs text-gray-500 dark:text-gray-400">Continue conversations</p>
+                <p className="text-base font-semibold">Recent Chats</p>
+                <p className="text-sm opacity-90">Continue conversations</p>
               </div>
-              <Sparkles className="w-4 h-4 text-purple-500 opacity-60" />
+              <ArrowRight className="w-5 h-5" />
             </button>
           </div>
           
-          {/* Enhanced Bottom Instruction */}
-          <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-              <span>Tap the menu button to get started</span>
-              <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+          {/* Enhanced Features */}
+          <div className="mt-8 pt-6 border-t border-gray-200 dark:border-gray-700">
+            <div className="grid grid-cols-3 gap-4">
+              <div className="text-center">
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Phone className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                </div>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Voice Calls</p>
+              </div>
+              <div className="text-center">
+                <div className="w-10 h-10 bg-green-100 dark:bg-green-900/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Video className="w-5 h-5 text-green-600 dark:text-green-400" />
+                </div>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Video Calls</p>
+              </div>
+              <div className="text-center">
+                <div className="w-10 h-10 bg-purple-100 dark:bg-purple-900/20 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Shield className="w-5 h-5 text-purple-600 dark:text-purple-400" />
+                </div>
+                <p className="text-xs text-gray-600 dark:text-gray-400">Secure</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* Desktop Layout - Enhanced */}
-      <div className="welcome-screen-desktop">
-        <div className="welcome-card-desktop">
+      <div className="hidden lg:block max-w-2xl mx-auto px-8">
+        <div className="bg-white dark:bg-gray-800 rounded-3xl p-12 shadow-2xl border border-gray-200 dark:border-gray-700">
           {/* Enhanced Icon Container */}
-          <div className="w-20 h-20 bg-gradient-to-br from-blue-100 to-blue-200 dark:from-blue-900/20 dark:to-blue-800/20 rounded-full flex items-center justify-center mb-6 shadow-sm">
-            <MessageCircle className="w-10 h-10 text-blue-600 dark:text-blue-400" />
+          <div className="w-32 h-32 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl">
+            <MessageCircle className="w-16 h-16 text-white" />
           </div>
           
           {/* Enhanced Title */}
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Welcome to MeebaChat
           </h2>
           
           {/* Enhanced Description */}
-          <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md text-center">
-            Select a conversation from the sidebar to start messaging, or search for new users to connect with.
+          <p className="text-gray-600 dark:text-gray-400 mb-10 max-w-lg mx-auto text-lg leading-relaxed">
+            Select a conversation from the sidebar to start messaging, or search for new users to connect with. 
+            Enjoy secure, real-time communication with voice and video calls.
           </p>
           
+          {/* Enhanced Features Grid */}
+          <div className="grid grid-cols-3 gap-6 mb-8">
+            <div className="text-center">
+              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/20 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <Phone className="w-8 h-8 text-blue-600 dark:text-blue-400" />
+              </div>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Voice Calls</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Crystal clear audio</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 dark:bg-green-900/20 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <Video className="w-8 h-8 text-green-600 dark:text-green-400" />
+              </div>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Video Calls</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">Face-to-face chats</p>
+            </div>
+            <div className="text-center">
+              <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/20 rounded-2xl flex items-center justify-center mx-auto mb-3">
+                <Shield className="w-8 h-8 text-purple-600 dark:text-purple-400" />
+              </div>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-1">Secure</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">End-to-end encryption</p>
+            </div>
+          </div>
+          
           {/* Enhanced Search Hint */}
-          <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-            <Search className="w-4 h-4" />
-            <span>Search for users to start a conversation</span>
+          <div className="flex items-center justify-center gap-3 text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-700 rounded-xl p-4">
+            <Search className="w-5 h-5" />
+            <span className="text-sm">Search for users to start a conversation</span>
           </div>
         </div>
       </div>

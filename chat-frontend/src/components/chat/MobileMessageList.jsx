@@ -137,7 +137,7 @@ const MobileMessageList = ({
   const messageGroups = groupMessages(messages);
 
   return (
-    <div className="chat-messages-responsive" ref={messageListRef}>
+    <div className="chat-messages-responsive pb-32" ref={messageListRef}>
       {/* Enhanced Pull to refresh indicator */}
       {isPulling && (
         <div 
@@ -168,7 +168,7 @@ const MobileMessageList = ({
         
         {/* Enhanced Typing Indicator */}
         {typingUsers[selectedUser?._id] && (
-          <div className="flex justify-start animate-in slide-in-from-bottom-2 duration-300">
+          <div className="flex justify-start animate-in slide-in-from-bottom-2 duration-300 mb-4">
             <div className="flex gap-2 sm:gap-3 max-w-[85%]">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-white dark:border-gray-700 shadow-sm overflow-hidden flex-shrink-0">
                 <img

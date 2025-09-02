@@ -9,7 +9,7 @@ import SettingsPage from './pages/SettingsPage';
 import HomePage from './pages/HomePage';
 import Navbar from './components/layout/Navbar';
 import LoadingSpinner from './components/LoadingSpinner';
-import { Toaster } from 'react-hot-toast'; // ✅ Import Toaster
+import { Toaster } from 'react-hot-toast';
 
 const App = () => {
   const { authUser, isCheckingAuth, checkAuth } = useAuthStore();
@@ -19,13 +19,29 @@ const App = () => {
   }, [checkAuth]);
 
   if (isCheckingAuth) {
-    return <LoadingSpinner />;
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   return (
     <ThemeProvider>
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
-        <Toaster position="top-right" toastOptions={{ duration: 4000 }} /> {/* ✅ Add this */}
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-300">
+        <Toaster 
+          position="top-right" 
+          toastOptions={{ 
+            duration: 4000,
+            style: {
+              background: 'var(--toast-bg)',
+              color: 'var(--toast-color)',
+              borderRadius: '12px',
+              border: '1px solid var(--toast-border)',
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
+            },
+          }} 
+        />
         {authUser && <Navbar />}
         <Routes>
           <Route

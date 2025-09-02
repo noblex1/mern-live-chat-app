@@ -58,7 +58,7 @@ const MobileNavigation = () => {
   };
 
   return (
-    <div className="lg:hidden fixed bottom-0 left-0 right-0 z-30 bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700" style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}>
+    <div className="lg:hidden mobile-nav fixed bottom-0 left-0 right-0 z-30 bg-white/95 dark:bg-gray-800/95 backdrop-blur-lg border-t border-gray-200 dark:border-gray-700" style={{ paddingBottom: 'max(8px, env(safe-area-inset-bottom))' }}>
       <div className="flex items-center justify-around px-2 py-2">
         {/* Menu Button */}
         <button

@@ -8,11 +8,11 @@ const HomePage = () => {
   const { selectedUser } = useChatStore();
 
   return (
-    <div className="h-screen flex flex-col bg-gray-50 dark:bg-gray-900 pt-16">
+    <div className="h-screen flex flex-col bg-gradient-to-br from-gray-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 transition-all duration-300 pt-16">
       {/* Mobile Layout */}
-      <div className="lg:hidden flex-1 flex flex-col overflow-hidden pb-20">
+      <div className="lg:hidden flex-1 flex flex-col overflow-hidden relative">
         {/* Main Content Area */}
-        <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex-1 flex flex-col min-h-0 pb-20">
           {selectedUser ? (
             <ChatContainer />
           ) : (
@@ -29,12 +29,12 @@ const HomePage = () => {
 
       {/* Desktop Layout */}
       <div className="hidden lg:flex flex-1 overflow-hidden">
-        <div className="flex w-full h-full bg-white dark:bg-gray-800 transition-colors duration-300">
+        <div className="flex w-full h-full bg-white dark:bg-gray-800 shadow-2xl rounded-2xl transition-all duration-300">
           {/* Desktop Sidebar */}
           <Sidebar />
           
           {/* Main Chat Area */}
-          <div className="flex-1 flex flex-col min-w-0">
+          <div className="flex-1 flex flex-col min-w-0 bg-white dark:bg-gray-800 rounded-r-2xl overflow-hidden">
             {!selectedUser ? <NoChatSelected /> : <ChatContainer />}
           </div>
         </div>

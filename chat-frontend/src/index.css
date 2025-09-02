@@ -189,17 +189,17 @@
 
   /* Enhanced Chat input styles with better responsiveness */
   .chat-input-container {
-    @apply flex items-end gap-2 p-3 sm:gap-3 sm:p-4;
+    @apply flex items-end gap-3 p-4;
     /* Responsive padding */
-    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    padding-bottom: max(16px, env(safe-area-inset-bottom));
   }
 
   .chat-input-textarea {
-    @apply flex-1 resize-none border border-gray-300 dark:border-gray-600 rounded-2xl px-3 py-2 sm:px-4 sm:py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white transition-all duration-200;
-    min-height: 44px; /* Better touch target */
+    @apply flex-1 resize-none border border-gray-300 dark:border-gray-600 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 dark:text-white transition-all duration-200;
+    min-height: 48px; /* Better touch target */
     max-height: 120px;
     line-height: 1.4;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.1), 0 1px 3px 0 rgba(0, 0, 0, 0.06);
   }
 
   /* Responsive input sizing */
@@ -211,9 +211,9 @@
   }
 
   .chat-send-button {
-    @apply flex-shrink-0 w-10 h-10 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 dark:disabled:bg-gray-600 text-white rounded-full flex items-center justify-center transition-all duration-200;
+    @apply flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 disabled:from-gray-300 disabled:to-gray-400 dark:disabled:from-gray-600 dark:disabled:to-gray-700 text-white rounded-2xl flex items-center justify-center transition-all duration-200;
     /* Add subtle shadow for depth */
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px 0 rgba(59, 130, 246, 0.3), 0 2px 4px 0 rgba(0, 0, 0, 0.1);
   }
 
   .chat-send-button:active {
@@ -1133,5 +1133,848 @@
     .responsive-gap {
       @apply gap-4;
     }
+  }
+
+  /* Enhanced Attachment Menu Styles */
+  .attachment-menu {
+    @apply absolute bottom-full left-0 mb-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-xl z-50 min-w-[200px] p-2;
+    animation: slideInUp 0.2s ease-out;
+  }
+
+  .attachment-menu-item {
+    @apply flex flex-col items-center gap-2 p-3 hover:bg-gray-50 dark:hover:bg-gray-700 rounded-xl transition-colors duration-200;
+  }
+
+  .attachment-menu-icon {
+    @apply w-8 h-8 rounded-xl flex items-center justify-center;
+  }
+
+  .attachment-menu-icon-photo {
+    @apply bg-blue-100 dark:bg-blue-900/30;
+  }
+
+  .attachment-menu-icon-camera {
+    @apply bg-green-100 dark:bg-green-900/30;
+  }
+
+  .attachment-menu-icon-video {
+    @apply bg-purple-100 dark:bg-purple-900/30;
+  }
+
+  .attachment-menu-icon-file {
+    @apply bg-orange-100 dark:bg-orange-900/30;
+  }
+
+  /* Enhanced Photo Uploader Styles */
+  .photo-uploader-container {
+    @apply relative;
+  }
+
+  .photo-uploader-drop-zone {
+    @apply border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl p-6 text-center transition-all duration-200;
+  }
+
+  .photo-uploader-drop-zone:hover {
+    @apply border-blue-400 dark:border-blue-500 bg-blue-50 dark:bg-blue-900/20;
+  }
+
+  .photo-uploader-drop-zone.drag-over {
+    @apply border-blue-500 dark:border-blue-400 bg-blue-100 dark:bg-blue-900/30 scale-105;
+  }
+
+  .photo-preview-container {
+    @apply relative inline-block;
+  }
+
+  .photo-preview-overlay {
+    @apply absolute inset-0 bg-black/50 rounded-2xl flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-200;
+  }
+
+  .photo-upload-progress {
+    @apply absolute bottom-0 left-0 right-0 h-1 bg-gray-200 dark:bg-gray-700 rounded-b-2xl overflow-hidden;
+  }
+
+  .photo-upload-progress-bar {
+    @apply h-full bg-blue-600 transition-all duration-300 ease-out;
+  }
+
+  /* Enhanced Touch Targets for Mobile */
+  .mobile-touch-target {
+    @apply min-h-[44px] min-w-[44px];
+  }
+
+  .mobile-touch-target-large {
+    @apply min-h-[48px] min-w-[48px];
+  }
+
+  .mobile-touch-target-xl {
+    @apply min-h-[56px] min-w-[56px];
+  }
+
+  /* Enhanced Responsive Photo Uploader */
+  .photo-uploader-responsive {
+    @apply w-full;
+  }
+
+  .photo-uploader-mobile {
+    @apply w-full max-w-sm mx-auto;
+  }
+
+  .photo-uploader-tablet {
+    @apply w-full max-w-md mx-auto;
+  }
+
+  .photo-uploader-desktop {
+    @apply w-full max-w-lg mx-auto;
+  }
+
+  /* Enhanced File Size Display */
+  .file-size-display {
+    @apply text-xs text-gray-500 dark:text-gray-400 font-mono;
+  }
+
+  /* Enhanced Upload Status */
+  .upload-status {
+    @apply flex items-center gap-2 text-sm;
+  }
+
+  .upload-status-success {
+    @apply text-green-600 dark:text-green-400;
+  }
+
+  .upload-status-error {
+    @apply text-red-600 dark:text-red-400;
+  }
+
+  .upload-status-loading {
+    @apply text-blue-600 dark:text-blue-400;
+  }
+
+  /* Enhanced Camera Integration */
+  .camera-button {
+    @apply relative overflow-hidden;
+  }
+
+  .camera-button::before {
+    @apply content-[''] absolute inset-0 bg-gradient-to-br from-green-400 to-green-600 opacity-0 hover:opacity-10 transition-opacity duration-200;
+  }
+
+  /* Enhanced drag and drop visual feedback */
+  .drag-over {
+    @apply border-blue-500 dark:border-blue-400 bg-blue-50 dark:bg-blue-900/20;
+    transform: scale(1.02);
+    transition: all 0.2s ease;
+  }
+
+  .drag-drop-indicator {
+    @apply fixed inset-0 bg-blue-500/20 backdrop-blur-sm z-[9999] flex items-center justify-center;
+    animation: fadeIn 0.2s ease-out;
+  }
+
+  .drag-drop-message {
+    @apply bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-2xl border-2 border-blue-500;
+    animation: scaleIn 0.2s ease-out;
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Enhanced Mobile Photo Uploader */
+  .mobile-photo-uploader {
+    @apply w-full;
+  }
+
+  .mobile-photo-preview {
+    @apply w-16 h-16 sm:w-20 sm:h-20;
+  }
+
+  .mobile-photo-actions {
+    @apply flex items-center gap-2;
+  }
+
+  .mobile-photo-action-button {
+    @apply p-2 rounded-full bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200;
+  }
+
+  /* Enhanced Responsive Breakpoints for Photo Uploader */
+  @media (max-width: 375px) {
+    .mobile-photo-preview {
+      @apply w-14 h-14;
+    }
+    
+    .attachment-menu {
+      @apply min-w-[280px];
+    }
+  }
+
+  @media (min-width: 376px) and (max-width: 640px) {
+    .mobile-photo-preview {
+      @apply w-16 h-16;
+    }
+    
+    .attachment-menu {
+      @apply min-w-[240px];
+    }
+  }
+
+  @media (min-width: 641px) and (max-width: 768px) {
+    .mobile-photo-preview {
+      @apply w-16 h-16;
+    }
+    
+    .attachment-menu {
+      @apply min-w-[280px];
+    }
+  }
+
+  @media (min-width: 769px) {
+    .mobile-photo-preview {
+      @apply w-20 h-20;
+    }
+    
+    .attachment-menu {
+      @apply min-w-[320px];
+    }
+  }
+
+  /* Enhanced Accessibility for Photo Uploader */
+  .photo-uploader-focus {
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800;
+  }
+
+  .photo-uploader-accessible {
+    @apply sr-only;
+  }
+
+  /* Enhanced Loading States for Photo Uploader */
+  .photo-uploader-loading {
+    @apply relative;
+  }
+
+  .photo-uploader-loading::after {
+    @apply content-[''] absolute inset-0 bg-white/80 dark:bg-gray-800/80 flex items-center justify-center;
+  }
+
+  .photo-uploader-spinner {
+    @apply w-6 h-6 border-2 border-blue-600 border-t-transparent rounded-full animate-spin;
+  }
+
+  /* Enhanced Error States for Photo Uploader */
+  .photo-uploader-error {
+    @apply border-red-500 dark:border-red-400 bg-red-50 dark:bg-red-900/20;
+  }
+
+  .photo-uploader-error-message {
+    @apply text-red-600 dark:text-red-400 text-sm mt-1;
+  }
+
+  /* Enhanced Success States for Photo Uploader */
+  .photo-uploader-success {
+    @apply border-green-500 dark:border-green-400 bg-green-50 dark:bg-green-900/20;
+  }
+
+  .photo-uploader-success-message {
+    @apply text-green-600 dark:text-green-400 text-sm mt-1;
+  }
+
+  /* Recording Indicator Styles */
+  .recording-indicator {
+    @apply p-4 border-t border-red-200 dark:border-red-800 bg-gradient-to-r from-red-50 to-pink-50 dark:from-red-900/20 dark:to-pink-900/20;
+    animation: slideInUp 0.2s ease-out;
+  }
+
+  .recording-dot {
+    @apply w-4 h-4 bg-red-500 rounded-full animate-pulse;
+  }
+
+  /* Enhanced Animation Keyframes */
+  @keyframes slideInUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInScale {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Professional WhatsApp-Style Message Bubbles */
+  .message-bubble {
+    position: relative;
+    max-width: 100%;
+    word-wrap: break-word;
+    font-size: 14px;
+    line-height: 1.4;
+    transition: all 0.2s ease;
+  }
+
+  .message-bubble-sent {
+    background: #0084ff;
+    color: white;
+    border-radius: 18px 18px 4px 18px;
+    padding: 8px 12px;
+    margin-left: auto;
+    box-shadow: 0 1px 2px rgba(0, 132, 255, 0.2);
+    position: relative;
+  }
+
+  .message-bubble-sent::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: -8px;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-left-color: #0084ff;
+    border-bottom-color: #0084ff;
+  }
+
+  .message-bubble-received {
+    background: #f0f0f0;
+    color: #1a1a1a;
+    border-radius: 18px 18px 18px 4px;
+    padding: 8px 12px;
+    margin-right: auto;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    position: relative;
+  }
+
+  .message-bubble-received::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -8px;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-right-color: #f0f0f0;
+    border-bottom-color: #f0f0f0;
+  }
+
+  .dark .message-bubble-received {
+    background: #2d3748;
+    color: #f7fafc;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  }
+
+  .dark .message-bubble-received::before {
+    border-right-color: #2d3748;
+    border-bottom-color: #2d3748;
+  }
+
+  /* Message group styling */
+  .message-group {
+    margin-bottom: 8px;
+  }
+
+  .message-group:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Message hover effects */
+  .message-bubble:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  .message-bubble-sent:hover {
+    box-shadow: 0 2px 8px rgba(0, 132, 255, 0.3);
+  }
+
+  /* Professional chat container styling */
+  .chat-container {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  }
+
+  .dark .chat-container {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+  }
+
+  /* Message list improvements */
+  .message-list {
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Message group spacing */
+  .message-group + .message-group {
+    margin-top: 8px;
+  }
+
+  /* Avatar improvements */
+  .message-avatar {
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+  }
+
+  .dark .message-avatar {
+    border-color: #2d3748;
+  }
+
+  .message-avatar:hover {
+    transform: scale(1.05);
+  }
+
+  /* Message time styling */
+  .message-time {
+    font-size: 11px;
+    opacity: 0.7;
+    font-weight: 500;
+  }
+
+  /* Message reactions improvements */
+  .message-reaction {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease;
+  }
+
+  .dark .message-reaction {
+    background: rgba(45, 55, 72, 0.95);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .message-reaction:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Message options menu improvements */
+  .message-options-menu {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  }
+
+  .dark .message-options-menu {
+    border-color: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+
+  /* Message bubble animations */
+  @keyframes messageSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .message-bubble {
+    animation: messageSlideIn 0.3s ease-out;
+  }
+
+  /* Message input positioning and spacing */
+  .message-input-container {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+  }
+
+  .dark .message-input-container {
+    background: #1f2937;
+    border-top-color: #374151;
+  }
+
+  /* Ensure proper spacing for typing indicator */
+  .typing-indicator-container {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Message list with proper bottom padding */
+  .message-list-with-padding {
+    padding-bottom: 5rem;
+  }
+
+  /* Hover effects for message actions */
+  .message-action-button {
+    transition: all 0.2s ease;
+  }
+
+  .message-action-button:hover {
+    transform: scale(1.1);
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .message-action-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Hover effects for message actions */
+  .message-action-button {
+    transition: all 0.2s ease;
+  }
+
+  .message-action-button:hover {
+    transform: scale(1.1);
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  .dark .message-action-button:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  /* Message input positioning and spacing */
+  .message-input-container {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    z-index: 10;
+    backdrop-filter: blur(10px);
+  }
+
+  .dark .message-input-container {
+    background: #1f2937;
+    border-top-color: #374151;
+  }
+
+  /* Ensure proper spacing for typing indicator */
+  .typing-indicator-container {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+  }
+
+  /* Message list with proper bottom padding */
+  .message-list-with-padding {
+    padding-bottom: 5rem;
+  }
+
+  /* Mobile footer positioning */
+  .mobile-footer {
+    position: sticky;
+    bottom: 0;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    z-index: 20;
+    backdrop-filter: blur(10px);
+  }
+
+  .dark .mobile-footer {
+    background: #1f2937;
+    border-top-color: #374151;
+  }
+
+  /* Mobile navigation positioning */
+  .mobile-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 30;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .dark .mobile-nav {
+    background: rgba(31, 41, 55, 0.95);
+    border-top-color: #374151;
+  }
+
+  /* Ensure message input appears above mobile navigation */
+  .message-input-mobile {
+    position: sticky;
+    bottom: 0;
+    z-index: 25;
+    background: white;
+    border-top: 1px solid #e5e7eb;
+    backdrop-filter: blur(10px);
+  }
+
+  .dark .message-input-mobile {
+    background: #1f2937;
+    border-top-color: #374151;
+  }
+
+  /* Typing indicator improvements */
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 0;
+  }
+
+  .typing-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: currentColor;
+    opacity: 0.6;
+    animation: typing-bounce 1.4s infinite ease-in-out;
+  }
+
+  @keyframes typing-bounce {
+    0%, 60%, 100% {
+      transform: translateY(0);
+      opacity: 0.6;
+    }
+    30% {
+      transform: translateY(-6px);
+      opacity: 1;
+    }
+  }
+
+  /* Enhanced Typing Indicator */
+  .typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 0;
+  }
+
+  .typing-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: currentColor;
+    opacity: 0.6;
+    animation: typing-bounce 1.4s infinite ease-in-out;
+  }
+
+  @keyframes typing-bounce {
+    0%, 60%, 100% {
+      transform: translateY(0);
+      opacity: 0.6;
+    }
+    30% {
+      transform: translateY(-8px);
+      opacity: 1;
+    }
+  }
+
+  /* Enhanced Button Styles */
+  .btn-primary {
+    background: linear-gradient(135deg, #0084ff 0%, #0073e6 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 132, 255, 0.3);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0, 132, 255, 0.4);
+  }
+
+  .btn-secondary {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    color: #495057;
+    border: 1px solid #dee2e6;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .dark .btn-secondary {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    color: #f7fafc;
+    border-color: #4a5568;
+  }
+
+  .btn-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Enhanced Input Styles */
+  .input-enhanced {
+    background: white;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 12px 16px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .dark .input-enhanced {
+    background: #2d3748;
+    border-color: #4a5568;
+    color: #f7fafc;
+  }
+
+  .input-enhanced:focus {
+    outline: none;
+    border-color: #0084ff;
+    box-shadow: 0 0 0 3px rgba(0, 132, 255, 0.1);
+  }
+
+  /* Enhanced Card Styles */
+  .card-enhanced {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid #f1f3f4;
+    transition: all 0.2s ease;
+  }
+
+  .dark .card-enhanced {
+    background: #1f2937;
+    border-color: #374151;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .card-enhanced:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  }
+
+  /* Enhanced Avatar Styles */
+  .avatar-enhanced {
+    border-radius: 50%;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+  }
+
+  .avatar-enhanced:hover {
+    transform: scale(1.05);
+  }
+
+  /* Enhanced Scrollbar */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e0 transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 3px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+  }
+
+  .dark .custom-scrollbar {
+    scrollbar-color: #4a5568 transparent;
+  }
+
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #4a5568;
+  }
+
+  .dark .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #718096;
+  }
+
+  /* Enhanced Loading States */
+  .skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+  }
+
+  .dark .skeleton {
+    background: linear-gradient(90deg, #2d3748 25%, #4a5568 50%, #2d3748 75%);
+    background-size: 200% 100%;
+  }
+
+  @keyframes skeleton-loading {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  /* Enhanced Focus States */
+  .focus-ring {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 132, 255, 0.1);
+    border-color: #0084ff;
+  }
+
+  /* Enhanced Transitions */
+  .transition-enhanced {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* Enhanced Shadows */
+  .shadow-soft {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  }
+
+  .shadow-medium {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .shadow-strong {
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  }
+
+  /* Enhanced Gradients */
+  .gradient-primary {
+    background: linear-gradient(135deg, #0084ff 0%, #0073e6 100%);
+  }
+
+  .gradient-secondary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+
+  .gradient-success {
+    background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+  }
+
+  .gradient-warning {
+    background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%);
+  }
+
+  .gradient-danger {
+    background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
   }
 }
