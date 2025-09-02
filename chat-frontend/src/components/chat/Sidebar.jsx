@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useChatStore } from '../../store/useChatStore';
-import { Users, Search, MessageCircle, X, Filter, Clock, MoreVertical, Phone, Video, Star, Archive, Trash2, Settings } from 'lucide-react';
+import { Users, Search, MessageCircle, X, Filter, Clock, MoreVertical, Star, Archive, Trash2 } from 'lucide-react';
 import { formatMessageTime } from '../../lib/utils';
 import toast from 'react-hot-toast';
 

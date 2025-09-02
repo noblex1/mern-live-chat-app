@@ -1,4 +1,4 @@
-import { MessageCircle, Search, Users, Sparkles, ArrowRight, Phone, Video, Shield } from 'lucide-react';
+import { MessageCircle, Search, Users, ArrowRight, Phone, Video, Shield } from 'lucide-react';
 import { useChatStore } from '../../store/useChatStore';
 import { useEffect } from 'react';
 

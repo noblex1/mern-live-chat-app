@@ -1,5 +1,5 @@
 import { useChatStore } from '../../store/useChatStore';
-import { ArrowLeft, Phone, Video, MoreVertical, User, Search, Volume2, VolumeX, Archive, Trash2, Star } from 'lucide-react';
+import { ArrowLeft, Phone, Video, MoreVertical, Search, Volume2, VolumeX, Archive, Trash2, Star } from 'lucide-react';
 import { useState } from 'react';
 import ProfileModal from './ProfileModal';
 
